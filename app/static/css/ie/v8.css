@@ -1,0 +1,13 @@
+/*
+	Jobster by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+*/
+
+/* Banner */
+
+	#banner {
+		background: url("../../static/images/home-laptop-2.png");
+		background-size: cover;
+		-ms-behavior: url("static/css/fonts/ie/backgroundsize.min.htc");
+	}
