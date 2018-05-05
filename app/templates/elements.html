@@ -7,21 +7,24 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>Elements - Jobster by TEMPLATED</title>
+		<title>Jobster</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
 		<!--[if lte IE 8]><script src="static/css/fonts/ie/html5shiv.js"></script><![endif]-->
-		<script src="static/js/jquery.min.js"></script>
-		<script src="static/js/skel.min.js"></script>
-		<script src="static/js/skel-layers.min.js"></script>
-		<script src="static/js/init.js"></script>
-		<noscript>
-			<link rel="stylesheet" href="static/css/fonts/skel.css" />
-			<link rel="stylesheet" href="static/css/fonts/style.css" />
-			<link rel="stylesheet" href="static/css/fonts/style-xlarge.css" />
-		</noscript>
-		<!--[if lte IE 8]><link rel="stylesheet" href="static/css/fonts/ie/v8.css" /><![endif]-->
+		<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/skel-layers.min.js') }}"></script>
+		<script src="{{url_for('static', filename = 'js/init.js')}}"></script>
+		<!-- <noscript> -->
+			<link rel="stylesheet" href="../static/css/skel.css" />
+			<link rel="stylesheet" href="../static/css/style.css" />
+			<link rel="stylesheet" href="../static/css/style-xlarge.css" />
+			<link rel="stylesheet" href="../static/css/style_admin.css"/>
+			<link rel="stylesheet" href="../static/css/style_responsive_admin.css"/>
+		<!-- </noscript> -->
+		<!--[if lte IE 8]><link rel="stylesheet" href="static/css/fonts/ie/v8.css" />
+		<![endif]-->
 	</head>
 	<body>
 
@@ -42,7 +45,7 @@
 				<div class="container">
 
 					<header class="major">
-						<h2>Elements</h2>
+						<h2>Elements</h2><i class="icon big rounded fa-user-plus"></i>
 						<p>Lorem ipsum dolor sit amet nullam id egestas urna aliquam</p>
 					</header>
 

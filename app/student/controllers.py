@@ -18,7 +18,9 @@ api = Blueprint('student', __name__, url_prefix = '/student')
 
 @api.route('/', methods=['GET'])
 def home():
-    return render_template('student_index.html')
+    err_msg = None
+    # err_msg = 'invalid email'
+    return render_template('student_index.html', err_msg = err_msg)
 
 @api.route('/login', methods = ['GET', 'POST'])
 def login():
