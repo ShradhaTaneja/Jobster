@@ -4,15 +4,21 @@ from werkzeug.datastructures import CombinedMultiDict
 
 api = Blueprint('student', __name__, url_prefix = '/student')
 
-@api.before_request
-def before_request():
-    # if 'logged_in' not in session and request.endpoint != 'student.login':
-    if 'logged_in' not in session:
-        print session
-        print request.endpoint
-        print '@@@@@@@@@@@ through before request'
-        return render_template('student_login.html')
+# @api.before_request
+# def before_request():
+#     # if 'logged_in' not in session and request.endpoint != 'student.login':
+#     if 'logged_in' not in session:
+#         print session
+#         print request.endpoint
+#         print '@@@@@@@@@@@ through before request'
+#         return render_template('student_login.html')
+# @api.route('/shradha', methods=['GET'])
+# def shradha():
+#     return render_template('test.html')
 
+@api.route('/', methods=['GET'])
+def home():
+    return render_template('student_index.html')
 
 @api.route('/login', methods = ['GET', 'POST'])
 def login():

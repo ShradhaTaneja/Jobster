@@ -1,5 +1,5 @@
 **/*.pyc
-._DS_Store
+**/*._DS_Store
 env/*
 config.py
 
