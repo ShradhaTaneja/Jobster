@@ -22,6 +22,14 @@ def home():
     # err_msg = 'invalid email'
     return render_template('student_index.html', err_msg = err_msg)
 
+
+
+@api.route('/home', methods=['GET'])
+def home_page():
+    err_msg = None
+    # err_msg = 'invalid email'
+    return render_template('student_home.html', err_msg = err_msg)
+
 @api.route('/login', methods = ['GET', 'POST'])
 def login():
     print request.method, '_________________'
@@ -63,6 +71,7 @@ def logout():
 @api.route('/test', methods=['GET'])
 def test():
     print session
+    return render_template('ui-cards.html')
     return 'test from controller - student'
 
 # @api.route('/', methods=['GET'])
