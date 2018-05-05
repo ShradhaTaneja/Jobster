@@ -205,7 +205,13 @@
 		font-weight: 400;
 		margin: 0 0 1em 0;
 	}
-
+	.label-new {
+		color: #ffffff;
+		display: block;
+		font-size: 0.9em;
+		font-weight: 400;
+		margin: 0 0 1em 0;
+	}
 	input[type="text"],
 	input[type="password"],
 	input[type="email"],
@@ -447,7 +453,7 @@
 			}
 
 /* Image */
-
+	.label-new {}
 	.image {
 		border-radius: 4px;
 		border: 0;
@@ -966,7 +972,7 @@
 		text-align: center;
 	}*/
 #banner {
-		background: url("/static/images/overlay.png"), url("/static/images/home-laptop-2.png");
+		background: url("/static/images/overlay.png"), url("/static/images/home-laptop.jpg");
 		background-position: center;
 		background-repeat: no-repeat;
 		background-size: cover;
