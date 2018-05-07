@@ -1,37 +1,176 @@
         {% extends "student_home_base.html" %}
         {% block body %}
         <body>
+        <div>
+			<div class="col-xl-9 col-lg-9">
+			<br>
+				<h5 class="mb-0"><span>What's New</span></h5>
+				<br>
+
+
+				<!--  -->
+				<div class="col-xl-6">
+	                <div class="card">
+	                    <div class="card-body">
+	                        <div class="stat-widget-one">
+	                            <div class="stat-icon dib"><i class="fa fa-file-text" style="color: #ed8f3c; border-color: #ed8f3c"></i></div>
+	                            <div class="stat-content dib">
+	                                <div class="stat-text">New Job Announcements</div>
+	                                <div class="stat-digit">961</div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+
+	            <div class="col-xl-6">
+	                <div class="card">
+	                    <div class="card-body">
+	                        <div class="stat-widget-one">
+	                            <div class="stat-icon dib"><i class="fa fa-users" style="color: #3ccfed; border-color: #3ccfed"></i></div>
+	                            <div class="stat-content dib">
+	                                <div class="stat-text">New Friend Requests</div>
+	                                <div class="stat-digit">961</div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+
+	            <div class="col-xl-6">
+	                <div class="card">
+	                    <div class="card-body">
+	                        <div class="stat-widget-one">
+	                            <div class="stat-icon dib"><i class="fa fa-envelope" style="color: blue; border-color: blue"></i></div>
+	                            <div class="stat-content dib">
+	                                <div class="stat-text">New Messages</div>
+	                                <div class="stat-digit">961</div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+
+
+				<!--  -->
+				<div class="col-xl-6">
+	                <div class="card">
+	                    <div class="card-body">
+	                        <div class="stat-widget-one">
+	                            <div class="stat-icon dib"><i class="fa fa-comment" style="color: #f86c6b; border-color: #f86c6b"></i></div>
+	                            <div class="stat-content dib">
+	                                <div class="stat-text">New Recommendations</div>
+	                                <div class="stat-digit">961</div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
 
 
 
+				<!--  -->
+				<div class="col-xl-6">
+	                <div class="card">
+	                    <div class="card-body">
+	                        <div class="stat-widget-one">
+	                            <div class="stat-icon dib"><i class="fa fa-building text-success border-success"></i></div>
+	                            <div class="stat-content dib">
+	                                <div class="stat-text">Companies Interested In You</div>
+	                                <div class="stat-digit">961</div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
 
+				<!--  -->
+			<!-- 	<div class="col-xl-6">
+	                <div class="card">
+	                    <div class="card-body">
+	                        <div class="stat-widget-one">
+	                            <div class="stat-icon dib"><i class="fa fa-user text-warning border-warning"></i></div>
+	                            <div class="stat-content dib">
+	                                <div class="stat-text">New Messages</div>
+	                                <div class="stat-digit">961</div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+				<div> -->
 
-        center 
-
-        - new friend requests
-        - new msgs
-        - new recommendations
-        - new job announcements
-        - companies are interested in you. (job adv.)
-
-
-
-
-ghjkml
-
-
-
-
-
-
-        right panel :
-        popular companies 
-        popular jobs
-
-
-        111111111111111111111111111111111111111
-        <hr>
+<!-- 				<h5 class="mb-0"><span>Recent Job Announcements</span></h5>
+				<br> -->
+				</div>
             
+
+            <div class="col-xl-3 col-sm-6 col-lg-3">
+            <br><br>
+
+
+
+                <div class="card text-white bg-flat-color-3">
+                    <div class="card-body pb-0">
+                        <div class="dropdown float-right">
+                        </div>
+<!--                         <h4 class="mb-0">
+                            <span class="count">10468</span>
+                        </h4> -->
+                        <p class="text-light"><h4>Popular Companies</h4></p>
+                        {% for a in ['micro', 'fb', 'google', 'blahh']%}
+                        <a href='/company/profile/val'>
+                            <span class="text-light">{{a}}</span><br>
+                        </a>
+                        {% endfor %}
+                        <br>
+                       
+                    </div>
+                </div>
+
+
+                <div class="card text-white bg-flat-color-2">
+                    <div class="card-body pb-0">
+                        <div class="dropdown float-right">
+                        </div>
+                        <p class="text-light"><h4>Popular Jobs</h4></p>
+                        {% for a in ['developer', 'engineer', 'designner', 'blahh']%}
+                        <a href='/company/profile/val'>
+                            <span class="text-light">{{a}}</span><br>
+                        </a>
+                        {% endfor %}
+                        <br>
+                       
+                    </div>
+                </div>
+
+
+
+            </div>
+            </div>
+		</div>
+
+		<div class="col-12">
+			<br>
+			<h5 class="mb-0"><span>Recent Job Postings</span></h5>
+			<br>
+
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header"> 
+                        <i class="fa fa-building" style="color: #d6319f;"></i><strong class="card-title pl-2"><a href="/student/">Company Name</a></strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mx-auto d-block">
+                            <h5 class="text-sm-center mt-2 mb-1"><a href="/student/">position</a></h5>
+                            <div class="location text-sm-center"><i class="fa fa-map-marker"></i> location</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+		</div>
 
         </body>
         {% endblock %}
