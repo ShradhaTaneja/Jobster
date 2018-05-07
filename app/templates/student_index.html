@@ -21,23 +21,23 @@
 
 						<!-- login -->
 							<div class="row 200%">
-								<section class="6u 12u$(small)">
-									
-									<header><h2><span><i class="icon rounded fa-sign-in fa-2x"></i></span>Login to your account</h2></header>
-									<form method="post" action='#'>
-								<div class="uniform" align="center">
-									<div class="6u$ 12u$(xsmall)">
-										<input  type="text" name="user_name" id="user_name" value="" placeholder="User Name" style="background-color:  #ffffff;color: #000; margin-bottom: 15px"/>
-									</div>
-									<div class="6u$ 12u$(xsmall)">
-										<input type="password" name="password" id="password" value="" placeholder="Password" style="background-color:  #ffffff;color: #000; margin-bottom: 15px"/>
-									</div>
-									<div>
-									<div class="12u$ 12u$(xsmall)" align="center"></div>
-									<a href="student" class="button green-bg big "  style="background-color:  #ffffff"> <span style="color: #42b972">Login</span></a>
-									</div>
-								</div>
-								</section>
+                                <section class="6u 12u$(small)">
+                                    <header><h2><span><i class="icon rounded fa-sign-in fa-lg"></i></span>Login to your account</h2></header>
+                                    <form method="post" action="{{ url_for('student.login') }}">
+                                        <div class="uniform" align="center">
+                                            <div class="6u$ 12u$(xsmall)">
+                                                <input  type="text" name="user_name" id="user_name" value="" placeholder="User Name" style="background-color:  #ffffff;color: #000; margin-bottom: 15px" required/>
+                                            </div>
+                                            <div class="6u$ 12u$(xsmall)">
+                                                <input type="password" name="password" id="password" value="" placeholder="Password" style="background-color:  #ffffff;color: #000; margin-bottom: 15px" required />
+                                            </div>
+                                            <div>
+                                            	<input type="submit" value="Login" class="button  big" style="color:black"></input>
+                                            <!-- <a href="home" class="button green-bg big "  style="background-color:  #ffffff"> <span style="color: #42b972">Login</span></a> -->
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
 
 
 

@@ -24,21 +24,24 @@ def home():
 
 @api.route('/login', methods = ['GET', 'POST'])
 def login():
-    print request.method, '_________________'
-    print session, '<<< session'
-    if 'logged_in' in session.keys() and session['logged_in']:
-        print 'logged in returning home'
-        return render_template('student_home.html')
-    elif request.method == 'GET':
-        print 'get request.. returing login page'
-        return render_template('student_login.html')
-    elif request.method == 'POST' and 'logged_in' not in session.keys():
-        print 'post req.. creating session'
-        session['logged_in'] = True
-        session['user'] = request.form['user']
-        print session    
-        return render_template('student_home.html')
-
+    print '________________________________________', request.method
+    print '______', request.form
+    print session
+    if 'user_name' not in session:
+        if request.method == 'GET':
+            return render_template('student_index.html')
+        elif request.method == 'POST':
+            user_name = request.form['user_name']
+            password = request.form['password']
+            # check for valid credentials
+            valid_user = True
+            if valid_user:
+                session['user_name'] = user_name
+                return render_template('student_home.html')
+    else:
+        return render_template('student_home.html', user_name = session['user_name'])
+    # else:
+    #     return render_template('student_index.html')
 
 
 
@@ -55,10 +58,9 @@ def login():
 
 @api.route('/logout', methods= ['GET'])
 def logout():
-    session.pop('logged_in')
-    session.pop('user')
+    session.pop('user_name', None)
     print session
-
+    return render_template('student_index.html')
 
 @api.route('/test', methods=['GET'])
 def test():
