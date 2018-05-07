@@ -1,11 +1,23 @@
 from app.db import get_mysql_conn
 
-def exists(rid):
+def exists(email):
     conn = get_mysql_conn()
     cursor = conn.cursor()
-    query = 'select rid, rname, raddress, rcity, rstate, rating, rcontact, rwebsite, remail from restaurant where rid = %d ;' % int(rid)
+    query = 'select st_name from student_profile where st_email = "%s" ;' % str(email)
     cursor.execute(query)
 
+    if cursor.fetchone() is None:
+        return False
+    return True
+
+def get_pass(email):
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    query = 'select st_password from student_profile where st_email = "%s" ;' % str(email)
+    cursor.execute(query)
+    print cursor.fetchone()[0], '=========='
+    conn.close()
+    return cursor.fetchone()[0]
     if cursor.fetchone() is None:
         return False
     return True
@@ -59,7 +71,8 @@ def fetch_restaurant(rid):
     return details
 
 
-def insert_restaurant(data):
+
+def register_student(data):
     conn = get_mysql_conn()
     cursor = conn.cursor()
 
@@ -69,18 +82,19 @@ def insert_restaurant(data):
     input_value_data = []
 
     for col in input_columns:
-        input_column_data.append(col)
+        input_column_data.append(col.replace('user', 'st'))
         input_value_data.append(data[col])
 
     # this is a temp thing, the column name mapping needs to be improved
-    insert_query = 'INSERT INTO `restaurant` (%s) values (%s);' % ( "`r" + "`, `r".join(input_column_data) + "`", "'" + "', '".join(input_value_data) + '\'')
-
-    cursor.execute(insert_query)
-    conn.commit()
-
-    rid = cursor.lastrowid
-    conn.close()
-    return rid
+    insert_query = 'INSERT INTO `student_profile` (%s) values (%s);' % ( "`" + "`, `".join(input_column_data) + "`", "'" + "', '".join(input_value_data) + '\'')
+    try:
+        cursor.execute(insert_query)
+        conn.commit()
+        conn.close()
+        return True
+    except Exception, e:
+        print '_________________________ERRORRRRRRRRRRRRRRRRRRRRRRRRRRR', e
+        return False
 
 
 def delete_restaurant(rid):

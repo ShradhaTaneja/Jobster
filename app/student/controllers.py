@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, render_template, session, redirect, url_for
-
 from werkzeug.datastructures import CombinedMultiDict
+from app.commons.modules import student 
 
 api = Blueprint('student', __name__, url_prefix = '/student')
 
@@ -17,15 +17,15 @@ api = Blueprint('student', __name__, url_prefix = '/student')
 #     return render_template('test.html')
 
 @api.route('/', methods=['GET'])
-def home():
+def index(err_msg = None, msg = None):
     err_msg = None
     # err_msg = 'invalid email'
-    return render_template('student_index.html', err_msg = err_msg)
+    return render_template('student_index.html', err_msg = err_msg, msg = msg)
 
 @api.route('/home', methods=['GET'])
 def home_page():
     print 'student home'
-    if 'user_name' not in session:
+    if 'user_email' not in session:
         return render_template('student_index.html', err_msg='Please login..!')
     err_msg = None
     # err_msg = 'invalid email'
@@ -38,26 +38,31 @@ def login():
     print '________________________________________', request.method
     print '______', request.form
     print session
-    if 'user_name' not in session:
+    if 'user_email' not in session:
         if request.method == 'GET':
             return render_template('student_index.html')
         elif request.method == 'POST':
-            user_name = request.form['user_name']
+            user_email = request.form['user_email']
             password = request.form['password']
             # check for valid credentials
             valid_user = True
-            if valid_user:
-                session['user_name'] = user_name
-                return render_template('student_home.html')
+            print student.exists(user_email), '>>>>>>>>>>>'
+            print '###########', student.correct_credentials(user_email, password)
+            if student.exists(user_email) and student.correct_credentials(user_email, password):
+                print '################'
+                session['user_email'] = user_email
+                print '_________user inserted ', session
+                return render_template('student_home.html', user_email = user_email)
             else:
-                return render_template('student_index.html', err_msg= 'User Name not found.!')
+                return render_template('student_index.html', err_msg= 'User not found, or Invalid credentials!')
     else:
-        return render_template('student_home.html', user_name = session['user_name'])
+        return render_template('student_home.html', user_email = session['user_email'])
 
 @api.route('/logout', methods= ['GET'])
 def logout():
-    session.pop('user_name', None)
+    session.pop('user_email', None)
     print session
+    return redirect(url_for('student.index'))
     return render_template('student_index.html', msg = 'Logout Successful.!')
 
 @api.route('/test', methods=['GET'])
@@ -65,32 +70,13 @@ def test():
     print session
     return 'test from controller - student'
 
-# @api.route('/', methods=['GET'])
-# @api.route('/<rid>', methods=['GET'])
-# def get_all(rid = None):
-#     if rid is None:
-#         all_data = module.get_all_students()
-#     else:
-#         print 'inside controller, rid given calling get rest'
-#         all_data = module.get_student(rid)
-#     return jsonify(all_data)
+@api.route('/register', methods = ['POST'])
+def register():
+    response = student.register(request.form)
+    if student.exists(str(request.form['user_email'])):
+        return render_template('student_index.html', err_msg = 'Email already used.! ')
 
-# @api.route('/add', methods=['POST'])
-# def add_student():
-#     required_parameters = ['name', 'address', 'city', 'state', 'contact']
-#     incoming_data = dict(request.get_json())
-#     incoming_parameters = incoming_data.keys()
-
-#     if len(set(required_parameters) - set(incoming_parameters)) > 0:
-#         return jsonify({
-#                 'status' : 'failure',
-#                 'message' : 'missing parameters.. you need to give it ALL.. :P (%s)' % (', '.join(required_parameters))
-#                 })
-
-#     response = module.add_student(incoming_data)
-#     return jsonify(response)
-
-# @api.route('/delete/<rid>', methods=['GET'])
-# def delete_student(rid):
-#     all_data = module.remove_student(rid)
-#     return jsonify(all_data)
+    if response['status'] == 'success':
+        return render_template('student_index.html', msg = 'Success.! Please login now.!')
+    else:
+        return render_template('student_index.html', err_msg = 'Error.! Please try later. ')

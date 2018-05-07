@@ -1,4 +1,5 @@
 import app.student.models as model
+import hashlib
 
 def get_all_students():
     response = {}
@@ -12,8 +13,8 @@ def get_all_students():
         response['message'] = str(e)
     return response
 
-def exists(rid):
-    return model.exists(rid)
+def exists(email):
+    return model.exists(email)
 
 def get_student(rid):
     response = {}
@@ -24,27 +25,40 @@ def get_student(rid):
             return {'status': 'failure', 'message': 'student doesn\'t exist'}
         response['status'] = 'success'
         response['data'] = data
-    except Exception as e:
+    except Exception, e:
         response['status'] = 'failure'
         response['data'] = None
         response['message'] = str(e)
     return response
 
-def add_student(data):
+def register(form_data):
     response = {}
+    data = {}
+    data['user_name'] = str(form_data['user_name'])
+    data['user_email'] = str(form_data['user_email'])
+    data['user_password'] = hashlib.md5(str(form_data['password'])).hexdigest()
+
     try:
-        rid = model.insert_student(data)
+        status = model.register_student(data)
         response['status'] = 'success'
-        response['data'] = {'rid' : rid}
+        response['user_email'] = data['user_email']
+        response['user_name'] = data['user_name']
     except Exception as e:
         response['status'] = 'failure'
         response['data'] = None
         response['message'] = str(e)
     return response
 
+def correct_credentials(user_email, user_password):
+    stored_pass = model.get_pass(user_email)
+    
+    print '++++', hashlib.md5(str(user_password)).hexdigest()
+    print '++++',stored_pass
+    # print user_password, user_email
 
+    return hashlib.md5(str(user_password)).hexdigest() == str(stored_pass)
 
-
+   
 def remove_student(rid):
     response = {}
     try:
