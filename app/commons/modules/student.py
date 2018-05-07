@@ -1,4 +1,5 @@
 import app.student.models as model
+import app.company.models as company_model
 import hashlib
 
 def get_all_students():
@@ -13,8 +14,17 @@ def get_all_students():
         response['message'] = str(e)
     return response
 
+def company_profile(cid):
+    return company_model.fetch_company(cid)
+
 def exists(email):
     return model.exists(email)
+
+def get_popular_data():
+    return company_model.get_popular_data()
+
+def get_recent_jobs():
+    return company_model.get_recent_jobs()
 
 def get_student(rid):
     response = {}

@@ -1,10 +1,25 @@
 import app.company.models as model
 import hashlib
 
-def get_all_companys():
+def get_popular_data():
     response = {}
     try:
-        data = model.fetch_all_companys()
+        data = model.popular_data()
+        if data == {}:
+            return {'status': 'failure', 'message': 'No Data found!'}
+        response['status'] = 'success'
+        response['data'] = data
+    except Exception, e:
+        response['status'] = 'failure'
+        response['data'] = None
+        response['message'] = str(e)
+    return response
+
+
+def get_recent_jobs():
+    response = {}
+    try:
+        data = model.get_recent_jobs()
         response['status'] = 'success'
         response['data'] = data
     except Exception as e:
@@ -16,7 +31,7 @@ def get_all_companys():
 def exists(email):
     return model.exists(email)
 
-def get_company(rid):
+def get_details(rid):
     response = {}
     data = model.fetch_company(rid)
     try:
@@ -39,7 +54,7 @@ def register(form_data):
     data['user_password'] = hashlib.md5(str(form_data['password'])).hexdigest()
 
     try:
-        status = model.register_company(data)
+        status = model.register(data)
         response['status'] = 'success'
         response['user_email'] = data['user_email']
         response['user_name'] = data['user_name']
