@@ -1,8 +1,9 @@
 from flask import Blueprint, jsonify, request, render_template, session, redirect, url_for
-
 from werkzeug.datastructures import CombinedMultiDict
 
 api = Blueprint('student', __name__, url_prefix = '/student')
+
+
 
 # @api.before_request
 # def before_request():
@@ -18,6 +19,7 @@ api = Blueprint('student', __name__, url_prefix = '/student')
 
 @api.route('/', methods=['GET'])
 def home():
+    print 'student index'
     err_msg = None
     # err_msg = 'invalid email'
     return render_template('student_index.html', err_msg = err_msg)
@@ -26,28 +28,40 @@ def home():
 
 @api.route('/home', methods=['GET'])
 def home_page():
+    print 'student home'
+    if 'user_name' not in session:
+        return render_template('student_index.html', err_msg='Please login..!')
     err_msg = None
     # err_msg = 'invalid email'
     return render_template('student_home.html', err_msg = err_msg)
 
 @api.route('/login', methods = ['GET', 'POST'])
 def login():
-    print request.method, '_________________'
-    print session, '<<< session'
-    if 'logged_in' in session.keys() and session['logged_in']:
-        print 'logged in returning home'
-        return render_template('student_home.html')
-    elif request.method == 'GET':
-        print 'get request.. returing login page'
-        return render_template('student_login.html')
-    elif request.method == 'POST' and 'logged_in' not in session.keys():
-        print 'post req.. creating session'
-        session['logged_in'] = True
-        session['user'] = request.form['user']
-        print session    
-        return render_template('student_home.html')
+    print '________________________________________', request.method
+    print '______', request.form
+    print session
+    if 'user_name' not in session:
+        if request.method == 'GET':
+            return render_template('student_index.html')
+        elif request.method == 'POST':
+            user_name = request.form['user_name']
+            password = request.form['password']
+            # check for valid credentials
+            valid_user = True
+            if valid_user:
+                session['user_name'] = user_name
+                return render_template('student_home.html')
+    else:
+        return render_template('student_home.html', user_name = session['user_name'])
+    # else:
+    #     return render_template('student_index.html')
 
 
+
+    
+    session['user_name'] = user_name
+    # print user_name, password
+    return render_template('student_index.html', err_msg=None)
 
 
     # if 'logged_in' in session and session['logged_in']:
@@ -61,10 +75,13 @@ def login():
     # return 'kya tum logged in ho ? '
     # return render_template('student_home.html')
 
+
 @api.route('/logout', methods= ['GET'])
 def logout():
-    session.pop('logged_in')
-    session.pop('user')
+    session.pop('user_name', None)
+    print session
+    return render_template('student_index.html')
+    # session.pop('user')
     print session
 
 

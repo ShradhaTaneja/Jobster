@@ -1,6 +1,15 @@
 from flask import Flask, session, request, render_template
+from app.student.controllers import api as student_api
 
 app = Flask(__name__)
+
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+
+# @login_manager.user_loader
+# def load_user(user_id):
+# 	return User.get(user_id)
+
 
 @app.route('/', methods = ['GET'])
 def home():
@@ -13,8 +22,6 @@ def test():
     return 'test from controller - student'
 
 
-from app.student.controllers import api as student_api
 
 
 app.register_blueprint(student_api)
-
