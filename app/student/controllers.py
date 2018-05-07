@@ -22,6 +22,17 @@ def home():
     # err_msg = 'invalid email'
     return render_template('student_index.html', err_msg = err_msg)
 
+@api.route('/home', methods=['GET'])
+def home_page():
+    print 'student home'
+    if 'user_name' not in session:
+        return render_template('student_index.html', err_msg='Please login..!')
+    err_msg = None
+    # err_msg = 'invalid email'
+    return render_template('student_home.html', err_msg = err_msg)
+
+
+
 @api.route('/login', methods = ['GET', 'POST'])
 def login():
     print '________________________________________', request.method
@@ -38,29 +49,16 @@ def login():
             if valid_user:
                 session['user_name'] = user_name
                 return render_template('student_home.html')
+            else:
+                return render_template('student_index.html', err_msg= 'User Name not found.!')
     else:
         return render_template('student_home.html', user_name = session['user_name'])
-    # else:
-    #     return render_template('student_index.html')
-
-
-
-    # if 'logged_in' in session and session['logged_in']:
-    #     print 'not logged in'
-    #     return render_template('student_home.html')
-    # if request.method == 'GET':
-    #     return render_template('student_login.html')
-    # print '>>>>>>>>>>>>> not get.. setting session value'
-    # session['logged_in'] = True
-    # session['user'] = request.form['user']
-    # return 'kya tum logged in ho ? '
-    # return render_template('student_home.html')
 
 @api.route('/logout', methods= ['GET'])
 def logout():
     session.pop('user_name', None)
     print session
-    return render_template('student_index.html')
+    return render_template('student_index.html', msg = 'Logout Successful.!')
 
 @api.route('/test', methods=['GET'])
 def test():
