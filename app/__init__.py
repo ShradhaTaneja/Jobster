@@ -14,7 +14,9 @@ def home():
 
 
 from app.student.controllers import api as student_api
+from app.company.controllers import api as company_api
 
 
 app.register_blueprint(student_api)
+app.register_blueprint(company_api)
 

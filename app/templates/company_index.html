@@ -1,0 +1,84 @@
+		{% extends "header.html" %}
+		{% block body %}
+		<body>
+
+		<section id="main" class="wrapper">
+						<div class="container">
+
+							<header class="major">
+								<h2 align="center"><i class="icon  fa-graduation-cap" style="color: #42b972"></i>    Company Account</h2>
+								{% if err_msg %}
+								<h3 style="color: red">{{err_msg}}</h3>
+								{% endif %}
+								{% if msg %}
+								<h3 style="color: green">{{msg}}</h3>
+								{% endif %}
+								<!-- <p>Lorem ipsum dolor sit amet nullam id egestas urna aliquam</p> -->
+							</header>
+
+						</div>
+		</section>					
+					<section id="one" class="wrapper style1 align-center">
+						<div class="container">
+
+
+						<!-- login -->
+							<div class="row 200%">
+                                <section class="6u 12u$(small)">
+                                    <header><h2><span><i class="icon rounded fa-sign-in fa-lg"></i></span>Login to your account</h2></header>
+                                    <form method="post" action="{{ url_for('company.login') }}">
+                                        <div class="uniform" align="center">
+                                            <div class="6u$ 12u$(xsmall)">
+                                                <input  type="email" name="user_email" id="user_email" value="" placeholder="Company Email" style="background-color:  #ffffff;color: #000; margin-bottom: 15px" required/>
+                                            </div>
+                                            <div class="6u$ 12u$(xsmall)">
+                                                <input type="password" name="password" id="password" value="" placeholder="Password" style="background-color:  #ffffff;color: #000; margin-bottom: 15px" required />
+                                            </div>
+                                            <div>
+                                            	<input type="submit" value="Login" class="button  big" style="color:black"></input>
+                                            <!-- <a href="home" class="button green-bg big "  style="background-color:  #ffffff"> <span style="color: #42b972">Login</span></a> -->
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
+
+
+
+
+						<!-- register -->
+								<section class="6u 12u$(small)">
+									<!-- <i class="icon big rounded fa fa-id-card"></i> -->
+									<!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium ullam consequatur repellat debitis maxime molestiae.</p> -->
+									<header><h2><span><i class="icon rounded fa-id-card fa-lg"></i></span>Create an account </h2></header>
+									<form method="post" action="{{ url_for('company.register') }}">
+                                        <div class="uniform" align="center">
+                                            <div class="6u$ 12u$(xsmall)">
+                                                <input type="text" name="user_name" id="user_name" value="" placeholder="Company Name" style="background-color:  #ffffff;color: #000; margin-bottom: 15px" required />
+                                            </div>
+                                            <div class="6u$ 12u$(xsmall)">
+                                                <input  type="email" name="user_email" id="user_email" value="" placeholder="Email" style="background-color:  #ffffff;color: #000; margin-bottom: 15px" required/>
+                                            </div>
+                                            <div class="6u$ 12u$(xsmall)">
+                                                <input type="password" name="password" id="password" value="" placeholder="Password" style="background-color:  #ffffff;color: #000; margin-bottom: 15px" required />
+                                            </div>
+                                            <div>
+                                            	<input type="submit" value="Login" class="button  big" style="color:black"></input>
+                                            <!-- <a href="home" class="button green-bg big "  style="background-color:  #ffffff"> <span style="color: #42b972">Login</span></a> -->
+                                            </div>
+                                        </div>
+                                    </form>
+								</section>
+								<!-- <section class="4u$ 12u$(small)">
+									<i class="icon big rounded fa-user"></i>
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque eaque eveniet, nesciunt molestias. Ipsam, voluptate vero.</p>
+								</section> -->
+							</div>
+						</div>
+					</section>
+
+
+
+
+		{% include 'footer.html' %}
+		</body>
+		{% endblock %}
