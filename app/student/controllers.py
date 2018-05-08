@@ -36,10 +36,36 @@ def home_page():
 
 
 
-@api.route('/view/company/<c_id>', methods = ['GET'])
-def company_profile(c_id):
+@api.route('/profile_edit', methods = ['GET', 'POST'])
+def profile_edit():
+    s_id = student.get_id(session['user_email'])
+    if request.method == 'GET':
+        data = student.get_student_profile(int(s_id))
+        print data['data']
+        return render_template('student_profile_edit.html', data = data['data'])
+    else:
+        print request.form
+        resume = request.files['resume']
+        print resume, '<<<<<<<<<<<<<<'
+        # resume_data = 
+        # update db
+        data = student.update_student_profile(int(s_id), resume = resume, data = request.form)
+        return render_template('student_profile_edit.html', msg = 'Updated.!', data = data['data'])
+
+
+@api.route('/view_company', methods = ['GET'])
+def view_company():
+    c_id = request.args['c_id']
+    # c_id = 2
     data = student.company_profile(int(c_id))
-    return render_template('company_profile.html', details = data)
+    # err_msg = None
+    # popular_data = student.get_popular_data()
+    # recent_jobs = student.get_recent_jobs()
+    # # print popular_data, '$$$$$$$$$$$$$$$'
+    # # err_msg = 'invalid email'
+    # return render_template('student_home.html', err_msg = err_msg, popular_data = popular_data, recent_jobs = recent_jobs)
+
+    return render_template('company_profile.html', data = data)
 
 @api.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -81,6 +107,13 @@ def logout():
 
 @api.route('/test', methods=['GET'])
 def test():
+    err_msg = None
+    popular_data = student.get_popular_data()
+    recent_jobs = student.get_recent_jobs()
+    # print popular_data, '$$$$$$$$$$$$$$$'
+    # err_msg = 'invalid email'
+    return render_template('student_home.html', err_msg = err_msg, popular_data = popular_data, recent_jobs = recent_jobs)
+
     print session
     return 'test from controller - student'
 

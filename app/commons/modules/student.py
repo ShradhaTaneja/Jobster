@@ -14,11 +14,40 @@ def get_all_students():
         response['message'] = str(e)
     return response
 
+def update_student_profile(st_id, resume = None, data = None):
+    response = {}
+    try:
+        data = model.update_student_profile(st_id, resume = resume, data = data)
+        response['status'] = 'success'
+        response['data'] = data
+    except Exception as e:
+        response['status'] = 'failure'
+        response['data'] = None
+        response['message'] = str(e)
+    return response
+
+
+def get_student_profile(email):
+    response = {}
+    try:
+        data = model.get_student_profile(email)
+        response['status'] = 'success'
+        response['data'] = data
+    except Exception as e:
+        response['status'] = 'failure'
+        response['data'] = None
+        response['message'] = str(e)
+    return response
+
 def company_profile(cid):
     return company_model.fetch_company(cid)
 
 def exists(email):
     return model.exists(email)
+
+
+def get_id(email):
+    return model.get_id(email)
 
 def get_popular_data():
     return company_model.get_popular_data()

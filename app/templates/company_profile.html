@@ -2,87 +2,30 @@
         {% block body %}
         <body>
         <div>
-			<div class="col-xl-9 col-lg-9">
+			<div class="col-xl-12 col-lg-12 col-sm-6">
 			<br>
-				<h5 class="mb-0"><span>What's New</span></h5>
+			
+				<div class="card">
+                    <div class="card-header">
+                        <strong class="card-title mb-3">Company Details</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mx-auto d-block">
+                            <!-- <img class="rounded-circle mx-auto d-block" src="images/admin.jpg" alt="Card image cap"> -->
+                            <h5 class="text-sm-center mt-2 mb-1">{{data['c_name']}}</h5>
+                            <div class="location text-sm-center"><i class="fa fa-map-marker"></i>{{data['c_headquarter_location']}}</div>
+                        </div>
+                        <hr>
+                <!--         <div class="card-text text-sm-center">
+                            <a href="#"><i class="fa fa-facebook pr-1"></i></a>
+                            <a href="#"><i class="fa fa-twitter pr-1"></i></a>
+                            <a href="#"><i class="fa fa-linkedin pr-1"></i></a>
+                            <a href="#"><i class="fa fa-pinterest pr-1"></i></a>
+                        </div> -->
+                    </div>
+                </div>
+				<!-- <h5 class="mb-0"><span>Company Details</span></h5> -->
 				<br>
-
-
-				<!--  -->
-				<div class="col-xl-6">
-	                <div class="card">
-	                    <div class="card-body">
-	                        <div class="stat-widget-one">
-	                            <div class="stat-icon dib"><i class="fa fa-file-text" style="color: #ed8f3c; border-color: #ed8f3c"></i></div>
-	                            <div class="stat-content dib">
-	                                <div class="stat-text">New Job Announcements</div>
-	                                <div class="stat-digit">961</div>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
-
-	            <div class="col-xl-6">
-	                <div class="card">
-	                    <div class="card-body">
-	                        <div class="stat-widget-one">
-	                            <div class="stat-icon dib"><i class="fa fa-users" style="color: #3ccfed; border-color: #3ccfed"></i></div>
-	                            <div class="stat-content dib">
-	                                <div class="stat-text">New Friend Requests</div>
-	                                <div class="stat-digit">961</div>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
-
-	            <div class="col-xl-6">
-	                <div class="card">
-	                    <div class="card-body">
-	                        <div class="stat-widget-one">
-	                            <div class="stat-icon dib"><i class="fa fa-envelope" style="color: blue; border-color: blue"></i></div>
-	                            <div class="stat-content dib">
-	                                <div class="stat-text">New Messages</div>
-	                                <div class="stat-digit">961</div>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
-
-
-				<!--  -->
-				<div class="col-xl-6">
-	                <div class="card">
-	                    <div class="card-body">
-	                        <div class="stat-widget-one">
-	                            <div class="stat-icon dib"><i class="fa fa-comment" style="color: #f86c6b; border-color: #f86c6b"></i></div>
-	                            <div class="stat-content dib">
-	                                <div class="stat-text">New Recommendations</div>
-	                                <div class="stat-digit">961</div>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
-
-
-
-				<!--  -->
-				<div class="col-xl-6">
-	                <div class="card">
-	                    <div class="card-body">
-	                        <div class="stat-widget-one">
-	                            <div class="stat-icon dib"><i class="fa fa-building text-success border-success"></i></div>
-	                            <div class="stat-content dib">
-	                                <div class="stat-text">Companies Interested In You</div>
-	                                <div class="stat-digit">961</div>
-	                            </div>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
 
 				<!--  -->
 			<!-- 	<div class="col-xl-6">
@@ -102,16 +45,30 @@
 
 <!-- 				<h5 class="mb-0"><span>Recent Job Announcements</span></h5>
 				<br> -->
-				</div>
+			</div>
             
-
-            <div class="col-xl-3 col-sm-6 col-lg-3">
+			<hr>
+            <div class="col-xl-12 col-sm-6 col-lg-12">
             <br><br>
 
+            <h5 class="mb-0"><span>Recent Job Postings</span></h5>
 
-
-
+            {% for job in recent_jobs %}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header"> 
+                        <i class="fa fa-building" style="color: #d6319f;"></i><strong class="card-title pl-2"><a href="/student/view_company?c_id={{job['c_id']}}">{{job['c_name']}}</a></strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mx-auto d-block">
+                            <h5 class="text-sm-center mt-2 mb-1"><a href="/student/">{{  job['job_title'] | safe}}</a></h5>
+                            <div class="location text-sm-center"><i class="fa fa-map-marker"></i> {{job['job_city']}}, {{job['job_state']}}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            {% endfor %}
+
             </div>
 		</div>
 
