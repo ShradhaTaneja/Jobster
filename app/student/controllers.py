@@ -44,12 +44,18 @@ def profile_edit():
         print data['data']
         return render_template('student_profile_edit.html', data = data['data'])
     else:
-        print request.form
-        resume = request.files['resume']
-        print resume, '<<<<<<<<<<<<<<'
+        resume = None
+        # print '__________________PIOST aa gyaaa'
+        print request.form, 'in the form'
+        if request.files:
+            resume = request.files['st_resume']
+        # print resume, '<<<<<<<<<<<<<<'
         # resume_data = 
         # update db
-        data = student.update_student_profile(int(s_id), resume = resume, data = request.form)
+        print 'before update'
+        update_status = student.update_student_profile(int(s_id), resume = resume, data = request.form)
+        print 'after calling update'
+        data = student.get_student_profile(int(s_id))
         return render_template('student_profile_edit.html', msg = 'Updated.!', data = data['data'])
 
 

@@ -16,14 +16,18 @@ def get_all_students():
 
 def update_student_profile(st_id, resume = None, data = None):
     response = {}
+    print 'inside update module'
+    print data
     try:
-        data = model.update_student_profile(st_id, resume = resume, data = data)
+        data = model.update_student_profile(st_id=st_id, resume = resume, data = data)
+        print data, 'model after function'
         response['status'] = 'success'
         response['data'] = data
     except Exception as e:
         response['status'] = 'failure'
         response['data'] = None
         response['message'] = str(e)
+        print e, '____ERRRORRRR'
     return response
 
 
