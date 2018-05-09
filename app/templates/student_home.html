@@ -136,7 +136,7 @@
                         </div>
                         <p class="text-light"><h4>Popular Jobs</h4></p>
                         {% for key in popular_data['jobs'] %}
-                        <a href='/company/profile/val'>
+                        <a href="/student/job_view?job_id={{key['job_id']}}">
                             <span class="text-light">{{key['job_id']}} - {{key['job_title']}}</span><br>
                         </a>
                         {% endfor %}
@@ -163,7 +163,7 @@
                     </div>
                     <div class="card-body">
                         <div class="mx-auto d-block">
-                            <h5 class="text-sm-center mt-2 mb-1"><a href="/student/">{{  job['job_title'] | safe}}</a></h5>
+                            <h5 class="text-sm-center mt-2 mb-1"><a href="/student/job_view?job_id={{job['job_id']}}">{{  job['job_title'] | safe}}</a></h5>
                             <div class="location text-sm-center"><i class="fa fa-map-marker"></i> {{job['job_city']}}, {{job['job_state']}}</div>
                         </div>
                     </div>

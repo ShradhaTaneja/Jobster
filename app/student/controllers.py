@@ -36,6 +36,25 @@ def home_page():
 
 
 
+@api.route('/job_search', methods = ['GET', 'POST'])
+def job_search():
+    all_jobs = student.get_all_jobs()
+    if request.method == 'POST':
+        print request.form['keyword'], '__________________________'
+        all_jobs = student.get_all_jobs(keyword = request.form['keyword'])
+        print '____________resulttttt', all_jobs
+    return render_template('student_job_search.html', all_jobs = all_jobs['data'])
+
+
+@api.route('/job_view', methods = ['GET'])
+def job_view():
+    job_id = request.args['job_id']
+    data = student.get_job(job_id)
+    
+    return render_template('job_announcement_view.html', data = data['data'][0], user_email = session['user_email'])
+
+
+
 @api.route('/profile_edit', methods = ['GET', 'POST'])
 def profile_edit():
     s_id = student.get_id(session['user_email'])
