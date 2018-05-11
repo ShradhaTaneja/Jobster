@@ -386,13 +386,15 @@ def add_friend():
 
 
 
-@api.route('/friends', methods = ['GET', 'POST'])
+@api.route('/friends_accepted', methods = ['GET', 'POST'])
 def friends():
     st_id = int(student.get_id(session['user_email']))
 
     query = 'SELECT st_name, st_major, st_university, st_id FROM ( (SELECT fr_id AS friend FROM friends WHERE st_id = %d AND status = "accepted") \
-     UNION (SELECT st_id AS friend FROM friends WHERE st_id = %d and status = "accepted") ) AS filter INNER JOIN student_profile ON student_profile.st_id = filter.friend;'  \
-     % (st_id, st_id)
+     UNION (SELECT st_id AS friend FROM friends WHERE st_id = %d and status = "accepted") ) AS filter INNER JOIN student_profile ON student_profile.st_id = filter.friend and student_profile.st_id != %d;'  \
+     % (st_id, st_id, st_id)
+     # print query
+    print query
 
     conn = get_mysql_conn()
     cursor = conn.cursor()
@@ -445,6 +447,30 @@ def are_friends(st_id, fr_id):
     return send_invite, status
     
 
+
+@api.route('/friends_add_new', methods = ['GET', 'POST'])
+def friends_add_new():
+    st_id = int(student.get_id(session['user_email']))
+
+    query = 'SELECT st_name, st_major, st_university, st_id FROM student_profile'
+
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+
+    cursor.execute(query)
+    res = cursor.fetchall()
+
+    all_data = []
+
+    for r in res:
+        row = {}
+        row['st_name'] = r[0]
+        row['st_major'] = r[1]
+        row['st_university'] = r[2]
+        row['st_id'] = int(r[3])
+        all_data.append(row)
+
+    return render_template('student_friends_add_new.html', data = all_data)
 
 
 
