@@ -18,6 +18,22 @@ def get_all_jobs(keyword = None):
         response['message'] = str(e)
     return response
 
+def get_all_companies(keyword = None):
+    response = {}
+    try:
+        if keyword is None:
+            data = company_model.get_all_companies()
+        else:
+            print keyword, '$$$$$$$'
+            data = company_model.get_filtered_companies( keyword = keyword)
+        response['status'] = 'success'
+        response['data'] = data
+    except Exception as e:
+        response['status'] = 'failure'
+        response['data'] = None
+        response['message'] = str(e)
+    return response
+
 def get_job(job_id):
     response = {}
     try:

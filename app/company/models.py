@@ -178,6 +178,75 @@ def get_all_jobs(keyword = None):
     conn.close()
     return all_data
 
+
+
+def get_filtered_companies(keyword):
+    print keyword, '<<<<<<<<<<<<<<'
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    # if keyword is None:
+    #     query = 'select c_name, job_title, job_state, job_city, c_id, posted_date, job_id from job_announcements natural join company_details order by posted_date DESC;'
+    # else:
+    key_str = '"%%' + keyword + '%%"'
+    query = " \
+    select c_name, c_id, c_headquarter_location, c_industry \
+    from company_details \
+    where c_name like %s or c_headquarter_location like %s or c_industry like %s or c_description like %s" % (key_str, key_str, key_str, key_str)
+    print query, '++'
+    cursor.execute(query)
+
+    all_data = []
+
+    for row in cursor.fetchall():
+        row_data = {}
+        row_data['c_name'] = row[0]
+        row_data['c_headquarter_location'] = row[2]
+        row_data['c_industry'] = row[3]
+        # row_data['job_city'] = row[3]
+        row_data['c_id'] = row[1]
+        # row_data['website'] = row[7]
+        # row_data['email'] = row[8]
+        all_data.append(row_data)
+
+    conn.close()
+    return all_data
+
+
+def get_all_companies(keyword = None):
+    print keyword, '<<<<<<<<<<<<<<'
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    # if keyword is None:
+    query = 'select c_name, c_id, c_headquarter_location, c_industry from company_details;'
+    # else:
+    #     query = " \
+    #     select c_name, job_title, job_state, job_city, c_id, posted_date, job_id \
+    #     from job_announcements natural join company_details \
+    #     where c_name like '%%%s%%' or job_title like '%%%s%%' or job_state like '\%\%%s\%\%' or job_city like '\%\%%s\%\%' order by posted_date desc" % (keyword, keyword, keyword, keyword)
+    print query, '++'
+    cursor.execute(query)
+
+    all_data = []
+
+    for row in cursor.fetchall():
+        row_data = {}
+        row_data['c_name'] = row[0]
+        row_data['c_headquarter_location'] = row[2]
+        row_data['c_industry'] = row[3]
+        # row_data['job_city'] = row[3]
+        row_data['c_id'] = row[1]
+        # row_data['posted_date'] = row[5]
+        # row_data['job_id'] = row[6]
+        # row_data['website'] = row[7]
+        # row_data['email'] = row[8]
+        all_data.append(row_data)
+
+    conn.close()
+    return all_data
+
+
+
+
 def get_recent_jobs():
     conn = get_mysql_conn()
     cursor = conn.cursor()

@@ -1,0 +1,71 @@
+        {% extends "student_home_base.html" %}
+        {% block body %}
+        <body>
+<!-- {{data}} -->
+
+
+
+            <div class="col-lg-12">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">All messages</strong>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <!-- <th scope="col">#</th> -->
+                                  <th scope="col">Date</th>
+                                  <th scope="col">Sender</th>
+                                  <th scope="col">Receiver</th>
+                                  <th scope="col">Message</th>
+
+                              </tr>
+                          </thead>
+                          <tbody>
+
+                          {% for m in data %}
+                           <tr>
+                              <th scope="row"><!-- <a href="/student/friends_messages?fr_id={{m['fr_id']}}"> -->{{m['date']}} <!-- </a> --></th>
+                              <!-- <td></td> -->
+                              <td>{{m['sender']}}</td>
+                              <td>{{m['receiver']}}</td>
+                              <td>{{m['message']}}</td>
+                           </tr>
+
+                          {% endfor %}
+
+                      </tbody>
+                  </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!-- 		<div class="col-12">
+			<br>
+			<h5 class="mb-0"><span>Messages</span></h5>
+			<br>
+			{% for friend in data %}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header"> 
+
+                        <i class="fa fa-building" style="color: #d6319f;"></i><strong class="card-title pl-2"><a href="/student/view_student?other_id={{friend['st_id']}}">{{friend['st_name']}}</a></strong>
+                    
+                    </div>
+                    <div class="card-body">
+                        <div class="mx-auto d-block">
+                            <h5 class="text-sm-center mt-2 mb-1">{{  friend['st_major'] | safe}}</h5>
+                            <div class="location text-sm-center"><i class="fa fa-map-marker"></i> {{friend['st_university']}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+ -->
+		</div>
+
+        </body>
+        {% endblock %}

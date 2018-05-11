@@ -476,8 +476,138 @@ def friends_add_new():
 
 
 
+@api.route('/friends_messages_all', methods = ['GET'])
+def friends_messages_all():
+    st_id = int(student.get_id(session['user_email']))
+
+    friends_query = "(SELECT fr_id AS friend FROM friends WHERE st_id = %d AND status = 'accepted') UNION (SELECT st_id AS friend FROM friends WHERE fr_id = %d AND status = 'accepted');" \
+     % (st_id, st_id)
+
+    conn = get_mysql_conn()
+    cursor = conn.cursor()  
+    res = cursor.execute(friends_query)
+    res_data = cursor.fetchall()
+    all_friends = []
+
+    all_recent_msgs = []
+
+    for one in res_data:
+        all_friends.append(int(one[0]))
+
+    print all_friends, '_________________________'
+
+    for fr_id in all_friends:
+        recent_msg_query = 'select * from (select max(sent_at) as max_sent_at from messages where (st_id = %d and fr_id = %d) or (st_id = %d and fr_id = %d)) as max inner join (select st_id, fr_id, message, sent_at from messages where (st_id = %d and fr_id = %d) or (st_id = %d and fr_id = %d)) as f on f.sent_at = max.max_sent_at;'  % (st_id, fr_id, fr_id, st_id, st_id, fr_id, fr_id, st_id)
+        cursor.execute(recent_msg_query)
+        res = cursor.fetchone()
+        
+        print recent_msg_query
+        try:
+            data = {}
+            print res, '???????????????????????????'
+            data['date'] = res[0].strftime("%Y-%m-%d %H:%M:%S")
+            if res[1] == st_id:
+                data['sender'] = st_id
+                data['receiver'] = fr_id
+            else:
+                data['sender'] = fr_id
+                data['receiver'] = st_id
+
+            data['message'] = res[3]
+            data['fr_id'] = fr_id
+            all_recent_msgs.append(data)
+        except Exception, e:
+            continue
+        
+    # return str(all_recent_msgs)
+    return render_template('student_friends_messages_all.html', data = all_recent_msgs)
+        # data[''] = res[]
+        # data[''] = res[]
+        # data[''] = res[]
 
 
+@api.route('friends_messages_single', methods = ['GET'])
+def friends_messages():
+    st_id = int(student.get_id(session['user_email']))
+    fr_id = int(request.args['fr_id'])
+    conn = get_mysql_conn()
+    cursor = conn.cursor()  
+    res = cursor.execute(friends_query)
+    res_data = cursor.fetchall()
+    return 'in friends msgs'
+    all_recent_msgs = []
+
+    # for fr_id in all_friends:
+    recent_msg_query = 'select * from messages where (st_id = %d and fr_id = %d) or (st_id = %d and fr_id = %d) order by sent_at desc;'  % (st_id, fr_id, fr_id, st_id)
+    cursor.execute(recent_msg_query)
+    res = cursor.fetchall()
+    
+    print recent_msg_query
+
+    for m in res:
+        data = {}
+        data['date'] = m[3].strftime("%Y-%m-%d %H:%M:%S")
+        # data['date'] = res[0].strftime("%Y-%m-%d %H:%M:%S")
+        if res[1] == st_id:
+            data['sender'] = st_id
+            data['receiver'] = fr_id
+        else:
+            data['sender'] = fr_id
+            data['receiver'] = st_id
+
+        data['message'] = res[5]
+        data['fr_id'] = fr_id
+        all_recent_msgs.append(data)
+
+    # return str(all_recent_msgs)
+    return render_template('student_friends_messages.html', data = all_recent_msgs)
+   
+
+
+@api.route('/company_search', methods = ['GET', 'POST'])
+def company_search():
+    all_companies = student.get_all_companies()
+    if request.method == 'POST':
+        print request.form['keyword'], '__________________________'
+        all_companies = student.get_all_companies(keyword = request.form['keyword'])
+        # print '____________resulttttt', all_jobs
+    return render_template('student_company_search.html', all_companies = all_companies['data'])
+
+
+@api.route('/company_following', methods = ['GET'])
+def company_following():
+    st_id = int(student.get_id(session['user_email']))
+    # fr_id = int(request.args['fr_id'])
+    conn = get_mysql_conn()
+    cursor = conn.cursor()  
+    # res = cursor.execute(friends_query)
+    # res_data = cursor.fetchall()
+    # return 'in friends msgs'
+    # all_recent_msgs = []
+
+    # for fr_id in all_friends:
+    recent_msg_query = 'select c_name, c_id, c_headquarter_location, c_industry from company_details natural join follow where st_id = %d'  % (st_id)
+    cursor.execute(recent_msg_query)
+    res = cursor.fetchall()
+    all_data = []
+
+    for row in res:
+        row_data = {}
+        row_data['c_name'] = row[0]
+        row_data['c_headquarter_location'] = row[2]
+        row_data['c_industry'] = row[3]
+        # row_data['job_city'] = row[3]
+        row_data['c_id'] = row[1]
+        # row_data['posted_date'] = row[5]
+        # row_data['job_id'] = row[6]
+        # row_data['website'] = row[7]
+        # row_data['email'] = row[8]
+        all_data.append(row_data)
+
+
+    # return str(all_recent_msgs)
+    return render_template('student_follow_companies.html', data = all_data)
+   
 
 
 # 'SELECT st_name, st_major , st_university FROM ( (SELECT fr_id AS friend FROM friends WHERE st_id = 6 AND status = 'accepted') UNION (SELECT st_id AS friend FROM friends WHERE fr_id = 6 AND status = 'accepted') ) AS filter INNER JOIN student_profile ON student_profile.st_id = filter.friend;'
