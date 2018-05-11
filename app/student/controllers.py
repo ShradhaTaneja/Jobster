@@ -1,6 +1,12 @@
 from flask import Blueprint, jsonify, request, render_template, session, redirect, url_for
 from werkzeug.datastructures import CombinedMultiDict
 from app.commons.modules import student 
+from app.db import get_mysql_conn
+import datetime
+import time
+import models as student_model
+
+
 
 api = Blueprint('student', __name__, url_prefix = '/student')
 
@@ -50,8 +56,24 @@ def job_search():
 def job_view():
     job_id = request.args['job_id']
     data = student.get_job(job_id)
+    st_id = student.get_id(session['user_email'])
+
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    print '__________previous insert'
+
+    query = 'select * from job_applications where st_id = %d and job_id = %d' % (int(st_id), int(job_id))
+    print query
+
+    cursor.execute(query)
+    if cursor.fetchone() is not None:
+        print '+++++++++ already applied.. '
+        conn.close()
+        return render_template('job_announcement_view.html', data = data['data'][0], user_email = session['user_email'], job_id = job_id, applied = True)
+
+
     
-    return render_template('job_announcement_view.html', data = data['data'][0], user_email = session['user_email'])
+    return render_template('job_announcement_view.html', data = data['data'][0], user_email = session['user_email'], job_id = job_id)
 
 
 
@@ -78,19 +100,40 @@ def profile_edit():
         return render_template('student_profile_edit.html', msg = 'Updated.!', data = data['data'])
 
 
+@api.route('/follow_company', methods = ['GET'])
+def follow_company():
+    # return request.args['c_id']
+    print 'in controller'
+    c_id = int(request.args['c_id'])
+    st_id = student.get_id(session['user_email'])
+    data = student.company_profile(int(c_id))
+    recent_jobs = student.get_company_jobs(int(c_id))
+    student.follow_company(c_id, st_id)
+    allow_follow = True
+
+    print 'after in controller'
+    following = student.is_following_company(int(c_id), int(st_id))
+    if following:
+        allow_follow = False    
+    return render_template('company_profile.html', data = data['data'], recent_jobs = recent_jobs, allow_follow = allow_follow, c_id = c_id)
+
+
 @api.route('/view_company', methods = ['GET'])
 def view_company():
     c_id = request.args['c_id']
     # c_id = 2
     data = student.company_profile(int(c_id))
-    # err_msg = None
-    # popular_data = student.get_popular_data()
-    # recent_jobs = student.get_recent_jobs()
-    # # print popular_data, '$$$$$$$$$$$$$$$'
-    # # err_msg = 'invalid email'
-    # return render_template('student_home.html', err_msg = err_msg, popular_data = popular_data, recent_jobs = recent_jobs)
+    recent_jobs = student.get_company_jobs(int(c_id))
+    st_id = student.get_id(session['user_email'])
+    print st_id
+    allow_follow = True
 
-    return render_template('company_profile.html', data = data)
+    print 'after in controller'
+    following = student.is_following_company(int(c_id), int(st_id))
+    if following:
+        allow_follow = False    
+    return render_template('company_profile.html', data = data['data'], recent_jobs = recent_jobs, allow_follow = allow_follow, c_id = c_id)
+
 
 @api.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -151,3 +194,262 @@ def register():
         return render_template('student_index.html', msg = 'Success.! Please login now.!')
     else:
         return render_template('student_index.html', err_msg = 'Error.! Please try later. ')
+
+
+
+
+
+## TODO : correct these functions - currently directly contacting the model, should go via modules
+
+@api.route('/apply_job', methods = ['GET', 'POST'])
+def apply_job():
+    job_id = int(request.args['job_id'])
+    st_id = student.get_id(session['user_email'])
+    applied_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    applied = False
+
+    # if request.method == 'GET':
+    
+    print '___________________________________________', request.method
+    data = student.get_job(job_id)
+    print data
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    print '__________previous insert'
+
+    query = 'select * from job_applications where st_id = %d and job_id = %d' % (int(st_id), int(job_id))
+    print query
+
+    cursor.execute(query)
+    if cursor.fetchone() is not None:
+        print '+++++++++ already applied.. '
+        conn.close()
+        return render_template('job_announcement_view.html', data = data['data'][0], user_email = session['user_email'], job_id = job_id, applied = True)
+
+
+    # else:
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    print '__________previous insert'
+
+    query = 'Insert into job_applications (st_id, job_id, applied_at) values (%d,%d, "%s");' % (int(st_id), int(job_id), applied_at)
+    print query
+    
+    try:
+        cursor.execute(query)
+        conn.commit()
+        print '___________after insert'
+        conn.close()
+        print 'conn closed'
+        data = student.get_job(job_id)
+        print data
+        applied = True
+        return render_template('job_announcement_view.html', data = data['data'][0], user_email = session['user_email'], job_id = job_id, applied = applied)
+
+    except Exception, e:
+        conn.close()
+        print '___________________thukaa ', e
+        data = student.get_job(job_id)
+        print data
+        return render_template('job_announcement_view.html', data = data['data'][0], user_email = session['user_email'], job_id = job_id, applied = applied)
+        return False
+
+
+
+@api.route('/applied_jobs', methods = ['GET'])
+def applied_jobs():
+    st_id = student.get_id(session['user_email'])
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    print '__________wohoooooooooo'
+
+    query = 'select c_name, job_title, job_state, job_city, c_id, job_id from job_announcements natural join company_details natural join job_applications where st_id = %d order by applied_at desc;' % int(st_id)
+
+    print query
+
+
+
+    cursor.execute(query)
+
+    all_data = []
+
+    for row in cursor.fetchall():
+        row_data = {}
+        row_data['c_name'] = row[0]
+        row_data['job_title'] = row[1]
+        row_data['job_state'] = row[2]
+        row_data['job_city'] = row[3]
+        row_data['c_id'] = row[4]
+        row_data['job_id'] = row[5]
+        # row_data['contact'] = row[6]
+        # row_data['website'] = row[7]
+        # row_data['email'] = row[8]
+        all_data.append(row_data)
+
+    conn.close()
+    return render_template('student_applied_jobs.html', user_email = session['user_email'], data = all_data)
+
+
+
+@api.route('/view_student', methods = ['GET', 'POST'])
+def student_profile():
+    other_id = int(request.args['other_id'])
+    st_id = int(student.get_id(session['user_email']))
+    send_invite = True
+
+    # get friend data
+    data = student_model.get_student_profile(other_id)
+    data.pop('st_gpa', None)
+    data.pop('st_email', None)
+    data.pop('profile_status', None)
+
+    print data, '_________________'
+
+
+    if other_id == st_id:
+        return render_template('student_profile.html', data = data, send_invite = False)
+
+    send_invite, status = are_friends(st_id, other_id)
+    print send_invite, status, '\\\\\\\\\\\\\\\\\\\\\\\\\\'
+
+    if not send_invite:
+        return render_template('student_profile.html', data = data, send_invite = False, other_id = other_id, status = status)
+
+    # conn.close()
+    return render_template('student_profile.html', data = data, send_invite = True, other_id = other_id)
+
+
+
+@api.route('/add_friend', methods = ['GET', 'POST'])
+def add_friend():
+    fr_id = int(request.args['fr_id'])
+    st_id = int(student.get_id(session['user_email']))
+    requested_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data = student_model.get_student_profile(fr_id)
+    data.pop('st_gpa', None)
+    data.pop('st_email', None)
+    data.pop('profile_status', None)
+
+    send_invite = True
+
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    
+    print '__________previous insert'
+
+    query = 'SELECT st_name, st_major , st_university FROM ( (SELECT fr_id AS friend FROM friends WHERE st_id = %d and fr_id = %d AND status = "accepted") \
+     UNION (SELECT st_id AS friend FROM friends WHERE fr_id = %d AND st_id = %d and status = "accepted") ) AS filter INNER JOIN student_profile ON student_profile.st_id = filter.friend;'  \
+     % (st_id, fr_id, fr_id, st_id)
+    cursor.execute(query)
+
+    print query, '<<<<<<<AASDFASDF'
+
+
+    if cursor.fetchone() is not None:
+        print '+++++++++ already friends.. '
+        cursor.execute('select status from friends where (st_id = %d and fr_id = %d) OR (st_id = %d and fr_id = %d)' % (st_id, fr_id, fr_id, st_id))
+        res = cursor.fetchone()[0]
+        print res
+        if res == 'accepted':
+            res = 'friends'
+        conn.close()
+        return render_template('student_profile.html', data = data, user_email = session['user_email'], send_invite = False, status = res)
+
+
+    # else:
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    print '__________previous insert'
+
+    query = 'Insert into friends (st_id, fr_id, requested_at) values (%d,%d, "%s");' % (int(st_id), int(fr_id), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print query
+    
+    try:
+        cursor.execute(query)
+        conn.commit()
+        print '___________after insert'
+        conn.close()
+        print 'conn closed'
+        data = student_model.get_student_profile(fr_id)
+        print data
+        send_invite = False
+        status = 'requested'
+        return render_template('student_profile.html', data = data, user_email = session['user_email'], send_invite = False, status = 'pending')
+
+    except Exception, e:
+        # conn.close()
+        print '___________________thukaa ', e
+        data = student_model.get_student_profile(fr_id)
+        print data
+        return render_template('student_profile.html', data = data, user_email = session['user_email'], send_invite = False, status = 'pending')
+        return False
+
+
+
+@api.route('/friends', methods = ['GET', 'POST'])
+def friends():
+    st_id = int(student.get_id(session['user_email']))
+
+    query = 'SELECT st_name, st_major, st_university, st_id FROM ( (SELECT fr_id AS friend FROM friends WHERE st_id = %d AND status = "accepted") \
+     UNION (SELECT st_id AS friend FROM friends WHERE st_id = %d and status = "accepted") ) AS filter INNER JOIN student_profile ON student_profile.st_id = filter.friend;'  \
+     % (st_id, st_id)
+
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+
+    cursor.execute(query)
+    res = cursor.fetchall()
+
+    all_data = []
+
+    for r in res:
+        row = {}
+        row['st_name'] = r[0]
+        row['st_major'] = r[1]
+        row['st_university'] = r[2]
+        row['st_id'] = int(r[3])
+        all_data.append(row)
+
+    return render_template('student_friends.html', data = all_data)
+
+
+
+def are_friends(st_id, fr_id):
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    send_invite = True
+    status = ''
+    query = 'SELECT st_name, st_major , st_university FROM ( (SELECT fr_id AS friend FROM friends WHERE st_id = %d and fr_id = %d AND status = "accepted") \
+     UNION (SELECT st_id AS friend FROM friends WHERE fr_id = %d AND st_id = %d and status = "accepted") ) AS filter INNER JOIN student_profile ON student_profile.st_id = filter.friend;'  \
+     % (st_id, fr_id, fr_id, st_id)
+    res = cursor.execute(query)
+    print query, '_________are friends'
+    print res, type(res)
+
+
+
+    if res is not None:
+        send_invite = False
+        print '+++++++++ already friends.. '
+        try:
+            cursor.execute('select status from friends where (st_id = %d and fr_id = %d) OR (st_id = %d and fr_id = %d)' % (st_id, fr_id, fr_id, st_id))
+            status = cursor.fetchone()[0]
+            print status
+            if status == 'accepted':
+                status = 'friends'
+        except:
+            send_invite = True
+        conn.close()
+
+
+    return send_invite, status
+    
+
+
+
+
+
+
+
+
+# 'SELECT st_name, st_major , st_university FROM ( (SELECT fr_id AS friend FROM friends WHERE st_id = 6 AND status = 'accepted') UNION (SELECT st_id AS friend FROM friends WHERE fr_id = 6 AND status = 'accepted') ) AS filter INNER JOIN student_profile ON student_profile.st_id = filter.friend;'

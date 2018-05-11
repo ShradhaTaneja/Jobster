@@ -73,11 +73,37 @@ def get_student_profile(email):
     return response
 
 def company_profile(cid):
-    return company_model.fetch_company(cid)
+    response = {}
+    try:
+        data = company_model.fetch_company(cid)
+        response['status'] = 'success'
+        response['data'] = data
+    except Exception as e:
+        response['status'] = 'failure'
+        response['data'] = None
+        response['message'] = str(e)
+    return response
+
+def is_following_company(c_id, st_id):
+    return model.is_following_company(c_id, st_id)
+
+
+def follow_company(c_id, st_id):
+    response = {}
+    try:
+        model.follow_company(c_id, st_id)
+        print 'model called'
+        response['status'] = 'success'
+        response['data'] = data
+    except Exception, e:
+        response['status'] = 'failure'
+        response['data'] = None
+        response['message'] = str(e)
+    return response
+
 
 def exists(email):
     return model.exists(email)
-
 
 def get_id(email):
     return model.get_id(email)
@@ -87,6 +113,9 @@ def get_popular_data():
 
 def get_recent_jobs():
     return company_model.get_recent_jobs()
+
+def get_company_jobs(c_id):
+    return company_model.get_company_jobs(c_id)
 
 def get_student(rid):
     response = {}

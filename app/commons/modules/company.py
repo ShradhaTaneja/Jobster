@@ -15,6 +15,17 @@ def get_popular_data():
         response['message'] = str(e)
     return response
 
+def get_company_jobs(c_id):
+    response = {}
+    try:
+        data = model.get_company_jobs(c_id)
+        response['status'] = 'success'
+        response['data'] = data
+    except Exception as e:
+        response['status'] = 'failure'
+        response['data'] = None
+        response['message'] = str(e)
+    return response
 
 def get_recent_jobs():
     response = {}

@@ -1,0 +1,30 @@
+        {% extends "student_home_base.html" %}
+        {% block body %}
+        <body>
+
+
+		<div class="col-12">
+			<br>
+			<h5 class="mb-0"><span>All Job Applications</span></h5>
+			<br>
+			{% for job in data %}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header"> 
+                        <i class="fa fa-building" style="color: #d6319f;"></i><strong class="card-title pl-2"><a href="/student/view_company?c_id={{job['c_id']}}">{{job['c_name']}}</a></strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mx-auto d-block">
+                            <h5 class="text-sm-center mt-2 mb-1"><a href="/student/job_view?job_id={{job['job_id']}}">{{  job['job_title'] | safe}}</a></h5>
+                            <div class="location text-sm-center"><i class="fa fa-map-marker"></i> {{job['job_city']}}, {{job['job_state']}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+
+		</div>
+
+        </body>
+        {% endblock %}

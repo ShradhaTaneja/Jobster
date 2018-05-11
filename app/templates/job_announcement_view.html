@@ -5,7 +5,19 @@
 			<div class="col-12">
                     <div class="card">
                       <div class="card-header">
-                        <strong>Job </strong> Announcement
+                        <strong>Job </strong> Announcement 
+
+                        {% if not applied %}
+           <!-- <div class="col-6"> -->
+           
+             <button type="button" class="btn btn-primary btn-sm"> <a href="/student/apply_job?job_id={{job_id}}" style="color: white"><span><i class="fa fa-star"></i>&nbsp; Apply</span></a></button>  
+             <!-- </div>          -->
+           {% endif %}
+           {% if applied %}
+
+             <button type="button" class="btn btn-success btn-sm"> <i class="fa fa-star"></i>&nbsp; Applied</span></button>
+           {% endif %}
+
                       </div>
                       <div class="card-body card-block">
 	                        <!-- <form action="{{ url_for('student.job_search') }}" method="post" enctype="multipart/form-data" class="form-horizontal"> -->

@@ -123,7 +123,7 @@ def get_filtered_jobs(keyword):
     query = " \
     select c_name, job_title, job_state, job_city, c_id, posted_date, job_id \
     from job_announcements natural join company_details \
-    where c_name like %s or job_title like %s or job_state like %s or job_city like %s " % (key_str, key_str, key_str, key_str)
+    where c_name like %s or job_title like %s or job_state like %s or job_city like %s or job_description like %s " % (key_str, key_str, key_str, key_str, key_str)
     print query, '++'
     cursor.execute(query)
 
@@ -203,10 +203,36 @@ def get_recent_jobs():
     return all_data
 
 
+
+def get_company_jobs(c_id):
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    query = "select c_name, job_title, job_state, job_city, c_id, job_id, job_salary from job_announcements natural join company_details where c_id = %d order by posted_date desc;" % int(c_id)
+    cursor.execute(query)
+
+    all_data = []
+
+    for row in cursor.fetchall():
+        row_data = {}
+        row_data['c_name'] = row[0]
+        row_data['job_title'] = row[1]
+        row_data['job_state'] = row[2]
+        row_data['job_city'] = row[3]
+        row_data['c_id'] = row[4]
+        row_data['job_id'] = row[5]
+        row_data['job_salary'] = row[6]
+        # row_data['website'] = row[7]
+        # row_data['email'] = row[8]
+        all_data.append(row_data)
+
+    conn.close()
+    return all_data
+
+
 def fetch_company(c_id):
     conn = get_mysql_conn()
     cursor = conn.cursor()
-    query = 'select c_name, c_headquarter_location , c_industry from company_details where c_id =  %d;' % int(c_id)
+    query = 'select c_name, c_headquarter_location , c_industry, c_description from company_details where c_id =  %d;' % int(c_id)
     cursor.execute(query)
     data =  cursor.fetchone()
     if data is None:
@@ -215,7 +241,7 @@ def fetch_company(c_id):
     details['c_name'] = data[0]
     details['c_headquarter_location'] = data[1]
     details['c_industry'] = data[2]
-    # details['city'] = data[3]
+    details['c_description'] = data[3]
     # details['state'] = data[4]
     # details['rating'] = data[5]
     # details['contact'] = data[6]
@@ -224,7 +250,7 @@ def fetch_company(c_id):
 
     conn.close()
     return details
-
+    
 
 
 def register(data):

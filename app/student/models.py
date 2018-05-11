@@ -20,6 +20,40 @@ def get_id(email):
     conn.close()
     return res
 
+
+def follow_company(c_id, st_id):
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    print '__________previous insert'
+
+    query = 'Insert into follow (st_id, c_id) values (%d,%d);' % (int(st_id), int(c_id))
+    print query
+    
+    try:
+        cursor.execute(query)
+        conn.commit()
+        print '___________after insert'
+        conn.close()
+        return True
+    except Exception, e:
+        conn.close()
+        print '___________________thukaa ', e
+        return False
+
+
+def is_following_company(c_id, s_id):
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    query = 'select * from follow where c_id = %d and st_id = %d;' % (int(c_id), int(s_id))
+    cursor.execute(query)
+
+    if cursor.fetchone() is None:
+        conn.close()
+        return False
+    conn.close()
+    return True
+
+
 def get_pass(email):
     conn = get_mysql_conn()
     cursor = conn.cursor()
@@ -62,7 +96,7 @@ def get_student_profile(st_id):
     conn = get_mysql_conn()
     cursor = conn.cursor()
     query = 'select st_name, st_university, st_major, st_gpa, st_keywords, profile_status, degree_type, st_email from student_profile where st_id =  %d;' % (st_id)
-    # print query
+    print query
     cursor.execute(query)
     data =  cursor.fetchone()
     # print data, '******************************'

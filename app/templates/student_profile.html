@@ -1,4 +1,4 @@
-                          {% extends "student_home_base.html" %}
+        {% extends "student_home_base.html" %}
         {% block body %}
 
         <div class="col-12">
@@ -6,25 +6,25 @@
             <!-- {{data}} {{c_id}} -->
             <br>
             <div class="col-6">
-              <h5 class="mb-0"><span>Welcome to {{data['c_name']}}'s profile.. {{followed}} </span></h5>            <br>
-
+              <h5 class="mb-0"><span>Student Details.. </span></h5>            <br>
+<!-- {{status}} -->
             </div>
-           {% if allow_follow %}
+           {% if send_invite %}
            <!-- <div class="col-6"> -->
            
-             <button type="button" class="btn btn-primary btn-sm"> <a href="/student/follow_company?c_id={{c_id}}" style="color: white"><span><i class="fa fa-star"></i>&nbsp; Follow</span></a></button>  
+             <button type="button" class="btn btn-primary btn-sm"> <a href="/student/add_friend?fr_id={{other_id}}" style="color: white"><span><i class="fa fa-star"></i>&nbsp; Add Friend</span></a></button>  
              <!-- </div>          -->
            {% endif %}
-           {% if not allow_follow %}
+           {% if not send_invite %}
 
-             <button type="button" class="btn btn-success btn-sm"> <i class="fa fa-star"></i>&nbsp; Following</span></button>
+             <button type="button" class="btn btn-success btn-sm"> <i class="fa fa-star"></i>&nbsp; {{status}}</span></button>
            {% endif %}
            
             </div> 
 
                     <div class="card">
                       <div class="card-header">
-                        <strong>{{data['c_name']}}</strong> 
+                        <strong>{{data['st_name']}}</strong> 
 
                       </div>
                       <!-- {{data}} -->
@@ -61,27 +61,5 @@
                   </div>
           </div>
 
-        <div class="col-12">
-            <br>
-            <h5 class="mb-0"><span>Job Postings</span></h5>
-            <br>
-            {% for job in recent_jobs %}
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header"> 
-                        <i class="fa fa-file" style="color: #d6319f;"></i><strong class="card-title pl-2"><a href="/student/job_view?job_id={{job['job_id']}}">{{job['job_title']}}</strong>
-                    </div>
-                    <div class="card-body">
-                        <div class="mx-auto d-block">
-                        <div class="location text-sm-center"><i class="fa fa-map-marker"></i> {{job['job_city']}}, {{job['job_state']}}</div>
-                            <h5 class="text-sm-center mt-2 mb-1"><i class="fa fa-money"></i>   {{  job['job_salary'] | safe}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-
-
-        </div>
 
         {% endblock %}

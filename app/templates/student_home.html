@@ -120,7 +120,7 @@
                         <p class="text-light"><h4>Popular Companies</h4></p>
                         <!-- {{popular_data['company']}} -->
                         {% for key in popular_data['company'] %}
-                        <a href='/company/profile/val'>
+                        <a href='/student/view_company?c_id={{key["c_id"]}}'>
                             <span class="text-light">{{key['c_name']}}</span><br>
                         </a>
                         {% endfor %}
