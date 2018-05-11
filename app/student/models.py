@@ -3,8 +3,12 @@ from app.db import get_mysql_conn
 def exists(email):
     conn = get_mysql_conn()
     cursor = conn.cursor()
-    query = 'select st_name from student_profile where st_email = "%s" ;' % str(email)
-    cursor.execute(query)
+    # query = 'select st_name from student_profile where st_email = "%s" ;' % str(email)
+    # cursor.execute(query)
+    try:
+        cursor.execute('select st_name from student_profile where st_email = %(email)s ;', {'email' : email})
+    except Exception, e:
+        print e, '__________________________'
 
     if cursor.fetchone() is None:
         return False
@@ -57,8 +61,20 @@ def is_following_company(c_id, s_id):
 def get_pass(email):
     conn = get_mysql_conn()
     cursor = conn.cursor()
-    query = 'select st_password from student_profile where st_email = "%s" ;' % str(email)
-    cursor.execute(query)
+    # query = 'select st_password from student_profile where st_email = "%s" ;' % str(email)
+    # cursor.execute(query)
+    print email, '___________'
+    email = str(email)
+    try:
+        cursor.execute( 'select st_password from student_profile where st_email = %(email)s ;', {'email' : email} )
+            # print row, '$$$$$$$$$$$$$$$$$$$$$$$'
+    except Exception, e:
+        print e, '++++++++++++++++++++++++++++++'
+  
+    password = cursor.fetchone()[0]
+    print password, '==========================='
+    conn.close()
+    return str(password)
     res = cursor.fetchone()[0]
     # print res, '=========='
     conn.close()

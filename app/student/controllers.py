@@ -152,11 +152,13 @@ def login():
             valid_user = True
             # print student.exists(user_email), '>>>>>>>>>>>'
             # print '###########', student.correct_credentials(user_email, password)
+
+            print student.exists(user_email), '___user exists'
+            print student.correct_credentials(user_email, password), 'correct pwd'
             if student.exists(user_email) and student.correct_credentials(user_email, password):
                 # print '################'
                 session['user_email'] = user_email
                 # print '_________user inserted ', session
-
                 print '++++++++++++ ', recent_jobs
                 return render_template('student_home.html', user_email = user_email, popular_data = popular_data, recent_jobs = recent_jobs)
             else:
