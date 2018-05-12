@@ -3,8 +3,6 @@
         <body>
 <!-- {{data}} -->
 
-
-
             <div class="col-lg-12">
                 <div class="col-lg-12">
                     <div class="card">
@@ -42,30 +40,44 @@
                     </div>
                 </div>
             </div>
-<!-- 		<div class="col-12">
-			<br>
-			<h5 class="mb-0"><span>Messages</span></h5>
-			<br>
-			{% for friend in data %}
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-header"> 
 
-                        <i class="fa fa-building" style="color: #d6319f;"></i><strong class="card-title pl-2"><a href="/student/view_student?other_id={{friend['st_id']}}">{{friend['st_name']}}</a></strong>
-                    
-                    </div>
-                    <div class="card-body">
-                        <div class="mx-auto d-block">
-                            <h5 class="text-sm-center mt-2 mb-1">{{  friend['st_major'] | safe}}</h5>
-                            <div class="location text-sm-center"><i class="fa fa-map-marker"></i> {{friend['st_university']}}</div>
+            <div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <strong>New </strong> Message
+                      </div>
+                      <!-- {{data}} {{data['st_email']}} -->
+                      <div class="card-body card-block">
+                        <form action="{{ url_for('student.new_msg') }}" method="post" enctype="multipart/form-data" class="form-horizontal">
+                          <div class="row form-group">
+                            <div class="col col-md-3"><label class=" form-control-label">Email</label></div>
+                            <div class="col-12 col-md-9">
+                              
+                                <select name="fr_id" id="fr_id" class="form-control">
+                                {% for f in friends%}
+                                <!-- <option value="0">Please select</option> -->
+                                <!-- <option value="1">Option #1</option> -->
+                                <!-- <option value="2">Option #2</option> -->
+                                <option value="{{f[1]}}">{{f[0]}}</option>
+                              {% endfor %}
+                              </select>
+                              
+                            </div>
+                          </div>
+                          <div class="row form-group">
+                            <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">Message</label><small class="help-block form-text" style="color: green;"></small></div>
+                            <div class="col-12 col-md-9"><textarea name="st_msg" id="st_msg" rows="9" placeholder="{{data['st_keywords']}}"  class="form-control"></textarea></div>
+                          </div>
+               
+                 
+                          <div class="card-footer">
+                          <button type="submit" class="btn btn-primary btn-sm">
+                          <i class="fa fa-dot-circle-o"></i> Send
+                        </button>
                         </div>
+                      </div>
+                      </form>
+                     
                     </div>
-                </div>
-            </div>
-            {% endfor %}
-
- -->
-		</div>
-
         </body>
         {% endblock %}

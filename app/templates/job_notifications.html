@@ -1,11 +1,24 @@
-        {% extends "company_home_base.html" %}
+        {% extends "student_home_base.html" %}
         {% block body %}
         <body>
+
+
 		<div class="col-12">
 			<br>
-			<h5 class="mb-0"><span>Recent Job Postings</span></h5>
+			<h5 class="mb-0"><span>Job Notification</span></h5>
 			<br>
-			{% for job in all_jobs %}
+
+
+
+
+
+            
+
+
+
+            <!-- {{data}} -->
+
+			{% for job in job_notifications %}
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-header"> 
@@ -23,5 +36,7 @@
 
 
 		</div>
+
+
         </body>
         {% endblock %}

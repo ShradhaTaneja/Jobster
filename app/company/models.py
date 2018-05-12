@@ -8,6 +8,7 @@ def exists(email):
     conn = get_mysql_conn()
     cursor = conn.cursor()
     query = 'select c_id from company_details where c_email = "%s";' % (str(email))
+    
     cursor.execute(query)
 
     if cursor.fetchone() is None:
@@ -18,6 +19,7 @@ def get_pass(email):
     conn = get_mysql_conn()
     cursor = conn.cursor()
     query = 'select c_password from company_details where c_email = "%s" ;' % str(email)
+    print query, '<<<<<<<<<<<<<<<<<<<<<'
     cursor.execute(query)
     res = cursor.fetchone()[0]
     print res, '========== @@@@@@@@@@@@@'
@@ -152,6 +154,39 @@ def get_all_jobs(keyword = None):
     cursor = conn.cursor()
     # if keyword is None:
     query = 'select c_name, job_title, job_state, job_city, c_id, posted_date, job_id from job_announcements natural join company_details order by posted_date DESC;'
+    # else:
+    #     query = " \
+    #     select c_name, job_title, job_state, job_city, c_id, posted_date, job_id \
+    #     from job_announcements natural join company_details \
+    #     where c_name like '%%%s%%' or job_title like '%%%s%%' or job_state like '\%\%%s\%\%' or job_city like '\%\%%s\%\%' order by posted_date desc" % (keyword, keyword, keyword, keyword)
+    print query, '++'
+    cursor.execute(query)
+
+    all_data = []
+
+    for row in cursor.fetchall():
+        row_data = {}
+        row_data['c_name'] = row[0]
+        row_data['job_title'] = row[1]
+        row_data['job_state'] = row[2]
+        row_data['job_city'] = row[3]
+        row_data['c_id'] = row[4]
+        row_data['posted_date'] = row[5]
+        row_data['job_id'] = row[6]
+        # row_data['website'] = row[7]
+        # row_data['email'] = row[8]
+        all_data.append(row_data)
+
+    conn.close()
+    return all_data
+
+
+def get_all_company_jobs(c_id):
+    # print keyword, '<<<<<<<<<<<<<<'
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    # if keyword is None:
+    query = 'select c_name, job_title, job_state, job_city, c_id, posted_date, job_id from job_announcements natural join company_details where c_id = %d order by posted_date DESC;' % int(c_id)
     # else:
     #     query = " \
     #     select c_name, job_title, job_state, job_city, c_id, posted_date, job_id \

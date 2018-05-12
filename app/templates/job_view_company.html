@@ -1,0 +1,50 @@
+                          {% extends "company_home_base.html" %}
+        {% block body %}
+
+        <div class="col-12">
+			<div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <strong>Job </strong> Announcement 
+<!--  -->
+
+                      </div>
+                      <div class="card-body card-block">
+	                        <!-- <form action="{{ url_for('student.job_search') }}" method="post" enctype="multipart/form-data" class="form-horizontal"> -->
+	                        {% for key, value in data.iteritems() %}
+
+	                        {% if key != 'c_id' and key != 'job_id' %}
+	                        <div class="row form-group">
+                            <div class="col col-md-3"><label class=" form-control-label">{{key}}</label></div>
+                            <div class="col-12 col-md-9">
+                              <p class="form-control-static">{{value}}</p>
+                            </div>
+                          </div>
+                          {% endif %}
+
+	                        {% endfor %}
+
+	                   		<!-- <div class="row form-group">
+	                            <div class="col"><label for="email-input" class=" form-control-label">Keyword</label></div>
+	                            <div class="col-12"><input type="text" id="degree_type" name="keyword"class="form-control"><small class="help-block form-text"></small></div>
+	                        </div> -->
+	                        <!-- <button type="submit" class="btn btn-primary btn-sm">
+	                          <i class="fa fa-dot-circle-o"></i> Search
+	                        </button> -->
+		                        <!-- <form action="{{ url_for('student.job_search') }}" method="get" enctype="multipart/form-data" class="form-horizontal"><button type="submit" class="btn btn-primary btn-sm">
+		                          <i class="fa fa-dot-circle-o"></i> Reset
+		                        </button>
+		                        </form> -->
+	                        <!-- </form> -->
+	                        
+	                        
+                      </div>
+                      
+                     
+                    </div>
+                  
+                  </div>
+		  </div>
+
+
+        {% endblock %}

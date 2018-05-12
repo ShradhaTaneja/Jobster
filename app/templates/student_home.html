@@ -6,7 +6,7 @@
 			<br>
 				<h5 class="mb-0"><span>What's New</span></h5>
 				<br>
-
+<!-- {{all_data}} -->
 
 				<!--  -->
 				<div class="col-xl-6">
@@ -15,8 +15,8 @@
 	                        <div class="stat-widget-one">
 	                            <div class="stat-icon dib"><i class="fa fa-file-text" style="color: #ed8f3c; border-color: #ed8f3c"></i></div>
 	                            <div class="stat-content dib">
-	                                <div class="stat-text">New Job Announcements</div>
-	                                <div class="stat-digit">961</div>
+	                                <div class="stat-text"><a href="/student/job_posting_notifications">New Job Announcements</a></div>
+	                                <div class="stat-digit">{{all_data['job_posting_notifications']['count']}}</div>
 	                            </div>
 	                        </div>
 	                    </div>
@@ -29,8 +29,8 @@
 	                        <div class="stat-widget-one">
 	                            <div class="stat-icon dib"><i class="fa fa-users" style="color: #3ccfed; border-color: #3ccfed"></i></div>
 	                            <div class="stat-content dib">
-	                                <div class="stat-text">New Friend Requests</div>
-	                                <div class="stat-digit">961</div>
+	                                <div class="stat-text"><a href="/student/friend_request_notifications">New Friend Requests</a></div>
+	                                <div class="stat-digit">{{all_data['friend_requests']['count']}}</div>
 	                            </div>
 	                        </div>
 	                    </div>
@@ -43,8 +43,8 @@
 	                        <div class="stat-widget-one">
 	                            <div class="stat-icon dib"><i class="fa fa-envelope" style="color: blue; border-color: blue"></i></div>
 	                            <div class="stat-content dib">
-	                                <div class="stat-text">New Messages</div>
-	                                <div class="stat-digit">961</div>
+	                                <div class="stat-text"><a href="/student/friends_messages_all">New Messages</a></div>
+	                                <div class="stat-digit">{{all_data['messages']['count']}}</div>
 	                            </div>
 	                        </div>
 	                    </div>
@@ -53,7 +53,7 @@
 
 
 				<!--  -->
-				<div class="col-xl-6">
+				<!-- <div class="col-xl-6">
 	                <div class="card">
 	                    <div class="card-body">
 	                        <div class="stat-widget-one">
@@ -65,12 +65,12 @@
 	                        </div>
 	                    </div>
 	                </div>
-	            </div>
+	            </div> -->
 
 
 
 				<!--  -->
-				<div class="col-xl-6">
+				<!-- <div class="col-xl-6">
 	                <div class="card">
 	                    <div class="card-body">
 	                        <div class="stat-widget-one">
@@ -82,7 +82,7 @@
 	                        </div>
 	                    </div>
 	                </div>
-	            </div>
+	            </div> -->
 
 				<!--  -->
 			<!-- 	<div class="col-xl-6">

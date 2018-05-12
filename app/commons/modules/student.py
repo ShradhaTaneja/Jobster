@@ -119,6 +119,7 @@ def follow_company(c_id, st_id):
 
 
 def exists(email):
+    print 'in module////////////////', model.exists(email)
     return model.exists(email)
 
 def get_id(email):

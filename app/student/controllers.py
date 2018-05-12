@@ -38,7 +38,8 @@ def home_page():
     recent_jobs = student.get_recent_jobs()
     # print popular_data, '$$$$$$$$$$$$$$$'
     # err_msg = 'invalid email'
-    return render_template('student_home.html', err_msg = err_msg, popular_data = popular_data, recent_jobs = recent_jobs)
+    all_data = all_notifications(int(student.get_id(session['user_email'])))
+    return render_template('student_home.html', err_msg = err_msg, popular_data = popular_data, recent_jobs = recent_jobs, all_data = all_data)
 
 
 
@@ -140,6 +141,7 @@ def login():
     print '________________________________________', request.method
     print '______', request.form
     print session
+
     if 'user_email' not in session:
         if request.method == 'GET':
             return render_template('student_index.html')
@@ -153,15 +155,20 @@ def login():
             # print student.exists(user_email), '>>>>>>>>>>>'
             # print '###########', student.correct_credentials(user_email, password)
 
-            print student.exists(user_email), '___user exists'
+            print student.exists(user_email), '___user exists============='
             print student.correct_credentials(user_email, password), 'correct pwd'
+            if not student.exists(user_email):
+                return render_template('student_index.html', err_msg= 'User not found, or Invalid credentials!')
+
             if student.exists(user_email) and student.correct_credentials(user_email, password):
                 # print '################'
                 session['user_email'] = user_email
                 # print '_________user inserted ', session
                 print '++++++++++++ ', recent_jobs
-                return render_template('student_home.html', user_email = user_email, popular_data = popular_data, recent_jobs = recent_jobs)
+                all_data = all_notifications(int(student.get_id(session['user_email'])))
+                return render_template('student_home.html', user_email = user_email, popular_data = popular_data, recent_jobs = recent_jobs, all_data = all_data)
             else:
+                print '&&&&&&&&&&&&&&&&&&&&'
                 return render_template('student_index.html', err_msg= 'User not found, or Invalid credentials!')
     else:
         popular_data = student.get_popular_data()
@@ -190,8 +197,9 @@ def test():
 @api.route('/register', methods = ['POST'])
 def register():
     response = student.register(request.form)
-    if student.exists(str(request.form['user_email'])):
-        return render_template('student_index.html', err_msg = 'Email already used.! ')
+    print response, '++++++++++++++++++++'
+    # if student.exists(str(request.form['user_email'])):
+    #     return render_template('student_index.html', err_msg = 'Email already used.! ')
     if response['status'] == 'success':
         return render_template('student_index.html', msg = 'Success.! Please login now.!')
     else:
@@ -518,12 +526,62 @@ def friends_messages_all():
             all_recent_msgs.append(data)
         except Exception, e:
             continue
-        
+    
+
+    get_fr_query = "select st_name, st_id from ((SELECT fr_id AS friend FROM friends WHERE st_id = %d AND status = 'accepted') UNION (SELECT st_id AS friend FROM friends WHERE fr_id = %d AND status = 'accepted')) as f inner join student_profile on student_profile.st_id = f.friend;" % (st_id, st_id)
     # return str(all_recent_msgs)
-    return render_template('student_friends_messages_all.html', data = all_recent_msgs)
+    cursor.execute(get_fr_query)
+    friends = cursor.fetchall()
+    return render_template('student_friends_messages_all.html', data = all_recent_msgs, friends = friends)
         # data[''] = res[]
         # data[''] = res[]
         # data[''] = res[]
+
+
+
+@api.route('/new_msg', methods = ['POST'])
+def new_msg():
+    st_id = int(student.get_id(session['user_email']))
+    fr_id = int(request.form['fr_id'])
+    msg = request.form['st_msg']
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    conn = get_mysql_conn()
+    cursor = conn.cursor()
+    query = "INSERT INTO messages (st_id, fr_id, message, sent_at) values (%d, %d, '%s', '%s')" % (int(st_id), int(fr_id), str(msg), str(date))
+    print query
+    cursor.execute(query)
+    conn.commit()
+
+    recent_msg_query = 'select * from messages where (st_id = %d and fr_id = %d) or (st_id = %d and fr_id = %d) order by sent_at desc;'  % (st_id, fr_id, fr_id, st_id)
+    cursor.execute(recent_msg_query)
+    print recent_msg_query
+    res = cursor.fetchall()
+    # print res, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+    all_recent_msgs = []
+    
+    # return str(res)
+    for m in res:
+        data = {}
+        data['date'] = m[3].strftime("%Y-%m-%d %H:%M:%S")
+        # data['date'] = res[0].strftime("%Y-%m-%d %H:%M:%S")
+        if res[1] == st_id:
+            data['sender'] = st_id
+            data['receiver'] = fr_id
+        else:
+            data['sender'] = fr_id
+            data['receiver'] = st_id
+
+        data['message'] = m[5]
+        data['fr_id'] = fr_id
+        all_recent_msgs.append(data)
+
+    # return str(all_recent_msgs)
+    return render_template('student_friend_messages.html', data = all_recent_msgs)
+
+
+
+    return str(request.form)
 
 
 @api.route('friends_messages_single', methods = ['GET'])
@@ -607,7 +665,118 @@ def company_following():
 
     # return str(all_recent_msgs)
     return render_template('student_follow_companies.html', data = all_data)
-   
+
+
+def all_notifications(st_id):
+    all_data = {}
+    all_data['job_posting_notifications'] = {}
+    all_data['job_posting_notifications']['count'] = 0
+    all_data['job_posting_notifications']['data'] = []
+
+    all_data['messages'] = {}
+    all_data['messages']['count'] = 0
+    all_data['messages']['data'] = []
+
+    all_data['friend_requests'] = {}
+    all_data['friend_requests']['count'] = 0
+    all_data['friend_requests']['data'] = []
+
+    conn = get_mysql_conn()
+    cursor = conn.cursor()  
+    notifi_query = 'select c_id, job_id, job_title, c_name, job_city from job_posting_notification natural join company_details natural join job_announcements where st_id =%d and read_status = "unread";' % (st_id)
+
+    cursor.execute(notifi_query)
+    for res in cursor.fetchall():
+        data = {}
+        data['c_id'] = res[0]
+        data['job_id'] = res[1]
+        data['job_title'] = res[2]
+        data['c_name'] = res[3]
+        data['job_city'] = res[4]
+        # data[''] = res[]
+        all_data['job_posting_notifications']['data'].append(data)
+
+    all_data['job_posting_notifications']['count'] = len(all_data['job_posting_notifications']['data'])
+
+    fr_query = "select st_id, requested_at, st_name , st_university, st_major  from friends natural join student_profile  where fr_id = %d and status = 'pending' and read_status = 'unread';" % (st_id)
+
+    cursor.execute(fr_query)
+    for res in cursor.fetchall():
+        data = {}
+        data['st_id'] = res[0]
+        data['requested_at'] = res[1].strftime("%Y-%m-%d %H:%M:%S")
+        data['st_name'] = res[2]
+        data['st_university'] = res[3]
+        data['st_major'] = res[4]
+        # data[''] = res[]
+        all_data['friend_requests']['data'].append(data)
+
+
+    all_data['friend_requests']['count'] = len(all_data['friend_requests']['data'])
+
+
+
+    msg_query = "select st_id, sent_at, st_name from messages natural join student_profile where fr_id = %d and read_status = 'unread';" % st_id
+    cursor.execute(msg_query)
+    for res in cursor.fetchall():
+        data = {}
+        data['st_id'] = res[0]
+        data['sent_at'] = res[1].strftime("%Y-%m-%d %H:%M:%S")
+        data['st_name'] = res[2]
+        # data['st_university'] = res[3]
+        # data['st_major'] = res[4]
+        # data[''] = res[]
+        all_data['messages']['data'].append(data)
+
+
+    all_data['messages']['count'] = len(all_data['messages']['data'])
+
+    return all_data
+
+
+
+@api.route('/friend_request_notifications', methods = ['GET'])
+def friend_request_notifications():
+    st_id = int(student.get_id(session['user_email']))
+    # fr_id = int(request.args['fr_id'])
+    conn = get_mysql_conn()
+    cursor = conn.cursor()  
+    update_query = 'update friends set read_status = "read" where fr_id = %d' % st_id
+
+    data = all_notifications(st_id)['friend_requests']['data']
+    # return str(data)
+
+    cursor.execute(update_query)
+
+    conn.commit()
+    conn.close()
+
+    return render_template('friend_notifications.html', data = data)
+
+
+
+
+
+@api.route('/job_posting_notifications', methods = ['GET'])
+def job_post_notification():
+    st_id = int(student.get_id(session['user_email']))
+    # fr_id = int(request.args['fr_id'])
+    conn = get_mysql_conn()
+    cursor = conn.cursor()  
+
+
+    update_query = 'UPDATE job_posting_notification set read_status = "read" where st_id = %d' % st_id
+
+    data = all_notifications(st_id)['job_posting_notifications']['data']
+
+    cursor.execute(update_query)
+
+    conn.commit()
+    conn.close()
+
+    return render_template('job_notifications.html', job_notifications = data)
+
+
 
 
 # 'SELECT st_name, st_major , st_university FROM ( (SELECT fr_id AS friend FROM friends WHERE st_id = 6 AND status = 'accepted') UNION (SELECT st_id AS friend FROM friends WHERE fr_id = 6 AND status = 'accepted') ) AS filter INNER JOIN student_profile ON student_profile.st_id = filter.friend;'

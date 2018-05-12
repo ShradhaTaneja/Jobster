@@ -7,10 +7,11 @@ def exists(email):
     # cursor.execute(query)
     try:
         cursor.execute('select st_name from student_profile where st_email = %(email)s ;', {'email' : email})
+        res = cursor.fetchone()
     except Exception, e:
         print e, '__________________________'
-
-    if cursor.fetchone() is None:
+    print res, '00000000000000000000000000'
+    if res is None:
         return False
     return True
 
@@ -68,10 +69,12 @@ def get_pass(email):
     try:
         cursor.execute( 'select st_password from student_profile where st_email = %(email)s ;', {'email' : email} )
             # print row, '$$$$$$$$$$$$$$$$$$$$$$$'
+        password = cursor.fetchone()[0]
     except Exception, e:
         print e, '++++++++++++++++++++++++++++++'
+        return False
   
-    password = cursor.fetchone()[0]
+    
     print password, '==========================='
     conn.close()
     return str(password)

@@ -1,0 +1,29 @@
+        {% extends "company_home_base.html" %}
+        {% block body %}
+        <body>
+		<div class="col-12">
+			<br>
+			<h5 class="mb-0"><span>All Applications</span></h5>
+
+            <!-- {{data}} -->
+			<br>
+			{% for job in data %}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header"> 
+                        <i class="fa fa-building" style="color: #d6319f;"></i><strong class="card-title pl-2"><a href="/company/job?job_id={{job['job_id']}}">{{job['job_title']}} ( job id - {{job['job_id']}} )</a></strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="mx-auto d-block">
+                            <h5 class="text-sm-center mt-2 mb-1"><a href="/student/job_view?job_id={{job['job_id']}}"><a href="/company/student_view?st_id={{job['st_id']}}">{{  job['st_name'] | safe}}</a></h5>
+                            <div class="location text-sm-center"><i class="fa fa-map-marker"></i> {{job['st_university']}}, {{job['st_major']}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+
+		</div>
+        </body>
+        {% endblock %}

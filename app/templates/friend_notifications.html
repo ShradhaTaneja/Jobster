@@ -1,0 +1,38 @@
+        {% extends "student_home_base.html" %}
+        {% block body %}
+        <body>
+
+
+		<div class="col-12">
+			<br>
+			<h5 class="mb-0"><span>Friend Requests</span></h5>
+			<br>
+
+
+            <!-- {{data}} -->
+
+			         {% for friend in data %}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header"> 
+
+                        <i class="fa fa-building" style="color: #d6319f;"></i><strong class="card-title pl-2"><a href="/student/view_student?other_id={{friend['st_id']}}">{{friend['st_name']}}</a></strong>
+                    
+                    </div>
+                    <div class="card-body">
+                        <div class="mx-auto d-block">
+                            <h5 class="text-sm-center mt-2 mb-1">{{  friend['st_major'] | safe}}</h5>
+                            <div class="location text-sm-center"><i class="fa fa-map-marker"></i> {{friend['st_university']}}</div>
+                            <div class="location text-sm-center"><i class="fa fa-calendar"></i> {{friend['requested_at']}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+
+		</div>
+
+
+        </body>
+        {% endblock %}
